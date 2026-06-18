@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Меню на неделю · ВкусВилл</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F2F4EC; --surface:#FFFFFF; --ink:#19251C; --muted:#6C7A6B;
+    --line:#E2E6D8; --green:#3C7A33; --green-deep:#264F22; --green-soft:#EAF1E2;
+    --carrot:#E07A3E; --carrot-soft:#FBEBDF; --shadow:0 1px 2px rgba(25,37,28,.05),0 8px 24px rgba(25,37,28,.06);
+    --radius:18px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 20px 80px}
+  .display{font-family:"Unbounded","Golos Text",sans-serif}
+  a{color:inherit}
+
+  header.top{display:flex;align-items:center;gap:12px;margin-bottom:26px}
+  .mark{width:38px;height:38px;border-radius:11px;background:var(--green);display:grid;place-items:center;color:#fff;font-family:"Unbounded";font-weight:700;font-size:20px}
+  .brand{font-family:"Unbounded";font-weight:700;font-size:19px;letter-spacing:-.01em}
+  .brand small{display:block;font-family:"Golos Text";font-weight:500;font-size:12px;color:var(--muted);letter-spacing:0}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+
+  .hero h1{font-family:"Unbounded";font-weight:700;font-size:clamp(28px,5vw,44px);line-height:1.05;letter-spacing:-.02em;margin:6px 0 10px}
+  .hero p.lead{font-size:17px;color:var(--muted);max-width:56ch;margin:0 0 24px}
+  .form{padding:26px}
+  .field{padding:20px 0;border-top:1px solid var(--line)}
+  .field:first-of-type{border-top:none;padding-top:4px}
+  .field>.q{font-weight:600;font-size:15px;margin-bottom:4px}
+  .field>.hint{font-size:13px;color:var(--muted);margin-bottom:14px}
+
+  .steppers{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+  .stepper{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:8px 10px}
+  .stepper .lbl{font-size:14px;color:var(--muted);min-width:64px}
+  .stepper button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:20px;line-height:1;cursor:pointer;color:var(--green);font-weight:700}
+  .stepper button:hover{background:var(--green-soft)}
+  .stepper .val{min-width:22px;text-align:center;font-weight:700;font-size:18px}
+
+  .kids{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+  .kid{display:flex;align-items:center;gap:10px;background:var(--green-soft);border-radius:12px;padding:8px 12px;width:fit-content}
+  .kid label{font-size:14px;color:var(--green-deep);font-weight:600}
+  .kid input{width:64px;border:1px solid #cdddbd;border-radius:8px;padding:6px 8px;font-family:inherit;font-size:14px}
+  .kid .rm{border:none;background:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:2px 4px}
+  .kid .rm:hover{color:var(--carrot)}
+  .addkid{margin-top:8px;border:1px dashed var(--green);background:#fff;color:var(--green);border-radius:12px;padding:9px 14px;font-family:inherit;font-weight:600;font-size:14px;cursor:pointer}
+  .addkid:hover{background:var(--green-soft)}
+  .nokids{font-size:13px;color:var(--muted)}
+
+  .chips{display:flex;flex-wrap:wrap;gap:9px}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 15px;font-size:14px;cursor:pointer;font-weight:500;transition:.12s;user-select:none}
+  .chip:hover{border-color:var(--green)}
+  .chip[aria-pressed="true"]{background:var(--green);color:#fff;border-color:var(--green)}
+  .chip.warn[aria-pressed="true"]{background:var(--carrot);border-color:var(--carrot)}
+  .chip.locked{background:var(--green-soft);border-color:var(--green-soft);color:var(--green-deep);cursor:default;font-weight:600}
+
+  textarea.free{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px;font-family:inherit;font-size:15px;resize:vertical;min-height:88px;color:var(--ink)}
+  textarea.free:focus{outline:none;border-color:var(--green)}
+
+  .store{display:flex;align-items:center;gap:12px;background:var(--green-soft);border-radius:14px;padding:13px 16px;flex-wrap:wrap}
+  .store .vv{font-family:"Unbounded";font-weight:700;color:var(--green-deep)}
+  .store .tag{font-size:12px;color:var(--green-deep);background:#fff;border-radius:999px;padding:3px 10px;border:1px solid #d4e2c6}
+
+  .btnrow{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+  .cta{flex:1;min-width:200px;border:none;border-radius:14px;background:var(--green);color:#fff;font-family:"Golos Text";font-weight:600;font-size:17px;padding:16px;cursor:pointer;transition:.12s}
+  .cta:hover{background:var(--green-deep)}
+  .cta:disabled{opacity:.6;cursor:wait}
+  .ghost{border:1px solid var(--line);background:#fff;border-radius:14px;padding:16px 18px;font-family:inherit;font-weight:600;font-size:15px;cursor:pointer}
+  .ghost:hover{border-color:var(--green);color:var(--green)}
+  .cta:focus-visible,.chip:focus-visible,.stepper button:focus-visible,.linkbtn:focus-visible,.ghost:focus-visible,.addkid:focus-visible{outline:3px solid #98c47f;outline-offset:2px}
+
+  .disclaimer{font-size:12.5px;color:var(--muted);margin-top:14px;line-height:1.45}
+
+  .results{display:none}
+  .results.show{display:block}
+  .resbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .summary{font-size:14px;color:var(--muted)}
+  .summary b{color:var(--ink)}
+  .resbar .actions{display:flex;gap:10px}
+  .linkbtn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+  .linkbtn:hover{border-color:var(--green);color:var(--green)}
+  .linkbtn.solid{background:var(--green);color:#fff;border-color:var(--green)}
+  .linkbtn.solid:hover{background:var(--green-deep)}
+
+  .ai-note{display:none;margin:14px 0 4px;padding:12px 16px;border-radius:12px;font-size:13.5px;line-height:1.45}
+  .ai-note.on{display:block;background:#eef3ff;border:1px solid #d4e0ff;color:#27407d}
+  .ai-note.kw{background:var(--green-soft);border:1px solid #d4e2c6;color:var(--green-deep)}
+  .ai-note b{font-weight:700}
+
+  .section-h{font-family:"Unbounded";font-weight:700;font-size:22px;letter-spacing:-.01em;margin:30px 0 14px;display:flex;align-items:baseline;gap:10px}
+  .section-h .n{color:var(--green);font-size:14px;font-weight:500;font-family:"Golos Text"}
+
+  .week{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(232px,1fr))}
+  .day{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .day .dh{padding:12px 16px;background:var(--green-soft);font-weight:700}
+  .meals{padding:8px 10px}
+  .meal{padding:10px 8px;border-top:1px dashed var(--line)}
+  .meal:first-child{border-top:none}
+  .meal .mt{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .meal .name{font-weight:600;font-size:14.5px;margin:2px 0 4px;line-height:1.25}
+  .meal .meta{font-size:12px;color:var(--muted);display:flex;gap:10px}
+  .meal details{margin-top:6px}
+  .meal summary{font-size:12.5px;color:var(--green);cursor:pointer;font-weight:600;list-style:none}
+  .meal summary::-webkit-details-marker{display:none}
+  .meal details p{font-size:12.5px;color:var(--ink);margin:8px 0 0;line-height:1.5}
+  .meal .ings{font-size:12px;color:var(--muted);margin-top:6px}
+  .empty{padding:10px 8px;font-size:13px;color:var(--carrot)}
+
+  .shop{padding:8px 4px}
+  .cat h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:18px 0 4px;font-weight:700}
+  .row{display:flex;align-items:center;gap:12px;padding:11px 8px;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}
+  .row .info{flex:1;min-width:0}
+  .row .ttl{font-weight:600;font-size:14.5px}
+  .row .sub{font-size:12.5px;color:var(--muted)}
+  .row .price{font-weight:700;font-size:15px;white-space:nowrap}
+  .row .go{font-size:12px;color:var(--green);text-decoration:none;font-weight:600;white-space:nowrap}
+  .row .go:hover{text-decoration:underline}
+  .total{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding:16px;background:var(--green-deep);color:#fff;border-radius:14px}
+  .total .t1{font-size:14px;opacity:.85}
+  .total .t2{font-family:"Unbounded";font-weight:700;font-size:24px}
+
+  @media (max-width:560px){.wrap{padding:18px 14px 60px}.week{grid-template-columns:1fr}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="mark">м</div>
+    <div class="brand">Меню недели<small>план питания · магазин ВкусВилл</small></div>
+  </header>
+
+  <!-- FORM -->
+  <section id="form-view" class="card hero">
+    <div class="form">
+      <h1 class="display">Здоровое меню<br>на неделю за минуту</h1>
+      <p class="lead">Несколько вопросов — и готово меню для всей семьи, простые рецепты до&nbsp;20&nbsp;минут и список покупок с товарами ВкусВилл.</p>
+
+      <div class="field">
+        <div class="q">Кто в семье?</div>
+        <div class="hint">Возраст детей важен: порции и сами блюда мы подбираем по возрасту.</div>
+        <div class="steppers">
+          <div class="stepper"><span class="lbl">Взрослые</span>
+            <button data-step="adults" data-d="-1" aria-label="меньше">−</button>
+            <span class="val" id="v-adults">2</span>
+            <button data-step="adults" data-d="1" aria-label="больше">+</button></div>
+        </div>
+        <div style="margin-top:14px">
+          <div class="q" style="font-size:14px">Дети и их возраст</div>
+          <div class="kids" id="kids"></div>
+          <button class="addkid" id="addkid">+ Добавить ребёнка</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="q">Какие приёмы пищи планируем?</div>
+        <div class="chips" id="meals">
+          <button class="chip" data-meal="breakfast" aria-pressed="true">Завтрак</button>
+          <button class="chip" data-meal="lunch" aria-pressed="true">Обед</button>
+          <button class="chip" data-meal="dinner" aria-pressed="true">Ужин</button>
+          <button class="chip" data-meal="snack" aria-pressed="false">Перекус</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="q">Что исключить из-за аллергии или непереносимости?</div>
+        <div class="hint">Рецепты с этими продуктами в меню не попадут.</div>
+        <div class="chips" id="exclude">
+          <button class="chip warn" data-ex="lactose" aria-pressed="false">Молочное</button>
+          <button class="chip warn" data-ex="gluten" aria-pressed="false">Глютен</button>
+          <button class="chip warn" data-ex="egg" aria-pressed="false">Яйца</button>
+          <button class="chip warn" data-ex="nuts" aria-pressed="false">Орехи</button>
+          <button class="chip warn" data-ex="fish" aria-pressed="false">Рыба</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="q">Что важно в меню?</div>
+        <div class="hint">Необязательно. «До 20 минут» включено всегда.</div>
+        <div class="chips" id="prefs">
+          <button class="chip locked" aria-pressed="true" disabled>⏱ До 20 минут</button>
+          <button class="chip" data-pref="protein" aria-pressed="false">Больше белка</button>
+          <button class="chip" data-pref="lowsugar" aria-pressed="false">Меньше сахара</button>
+          <button class="chip" data-pref="budget" aria-pressed="false">Бюджетно</button>
+          <button class="chip" data-pref="veg" aria-pressed="false">Вегетарианское</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="q">Опишите, что вы обычно готовите</div>
+        <div class="hint">Свободным текстом — мы подстроим меню под привычки вашей семьи.</div>
+        <textarea class="free" id="freetext" placeholder="Например: чаще готовим курицу и рыбу, дети любят пасту и каши, мясо едим редко, на завтрак — что-то быстрое…"></textarea>
+      </div>
+
+      <div class="field">
+        <div class="q">Магазин для покупок</div>
+        <div class="store" style="margin-top:10px">
+          <span class="vv">ВкусВилл</span>
+          <span class="tag">vkusvill.ru</span>
+          <span style="font-size:13px;color:var(--muted)">Список соберём из товаров этого магазина</span>
+        </div>
+      </div>
+
+      <div class="btnrow">
+        <button class="cta" id="generate">Составить меню на неделю</button>
+        <button class="ghost" id="demo">Заполнить примером</button>
+      </div>
+      <p class="disclaimer">Демоверсия. Названия товаров, цены и SKU — иллюстративные, в формате каталога ВкусВилл. Персонализация по описанию работает, когда инструмент запущен как артефакт в Claude; при открытии файла локально она переключается на подбор по ключевым словам.</p>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results" class="results">
+    <div class="resbar">
+      <div class="summary" id="summary"></div>
+      <div class="actions">
+        <button class="linkbtn" id="shuffle">Перемешать</button>
+        <button class="linkbtn solid" id="back">Изменить параметры</button>
+      </div>
+    </div>
+    <div class="ai-note" id="ainote"></div>
+
+    <h2 class="section-h display">Меню на неделю <span class="n" id="menu-sub"></span></h2>
+    <div class="week" id="week"></div>
+
+    <h2 class="section-h display">Список покупок <span class="n">ВкусВилл</span></h2>
+    <div class="card"><div class="shop" id="shop"></div></div>
+    <p class="disclaimer" style="padding:0 8px">Количество посчитано на всю неделю с учётом возраста едоков и округлено до целых упаковок. Ссылки ведут на поиск товара в каталоге ВкусВилл. Цены демонстрационные.</p>
+  </section>
+</div>
+
+<script>
+/* ===== ИНГРЕДИЕНТЫ + сопоставление с ВкусВилл =====
+   minAge — минимальный безопасный возраст ребёнка (мёд с 1 года, цельные орехи с ~4 лет). */
+const ING = {
+  oats:{name:"Овсяные хлопья",unit:"g",cat:"Бакалея и крупы",allerg:["gluten"],vv:{sku:"VV10231",title:"Хлопья овсяные «Долгие» 500 г",pack:500,price:89}},
+  buckwheat:{name:"Гречка",unit:"g",cat:"Бакалея и крупы",allerg:[],vv:{sku:"VV10288",title:"Гречка ядрица 900 г",pack:900,price:109}},
+  rice:{name:"Рис",unit:"g",cat:"Бакалея и крупы",allerg:[],vv:{sku:"VV10290",title:"Рис круглозёрный 900 г",pack:900,price:105}},
+  pasta:{name:"Паста",unit:"g",cat:"Бакалея и крупы",allerg:["gluten"],vv:{sku:"VV10455",title:"Макароны из твёрдых сортов 400 г",pack:400,price:99}},
+  lentils:{name:"Чечевица красная",unit:"g",cat:"Бакалея и крупы",allerg:[],vv:{sku:"VV10477",title:"Чечевица красная 500 г",pack:500,price:129}},
+  chickpeas:{name:"Нут",unit:"g",cat:"Бакалея и крупы",allerg:[],vv:{sku:"VV10481",title:"Нут 500 г",pack:500,price:139}},
+  bread:{name:"Хлеб цельнозерновой",unit:"g",cat:"Бакалея и крупы",allerg:["gluten"],vv:{sku:"VV10520",title:"Хлеб цельнозерновой 400 г",pack:400,price:89}},
+  honey:{name:"Мёд",unit:"g",cat:"Бакалея и крупы",allerg:[],minAge:1,vv:{sku:"VV10901",title:"Мёд цветочный 250 г",pack:250,price:319}},
+  olive_oil:{name:"Оливковое масло",unit:"ml",cat:"Бакалея и крупы",allerg:[],vv:{sku:"VV10912",title:"Масло оливковое Extra Virgin 500 мл",pack:500,price:629}},
+  nuts:{name:"Грецкий орех",unit:"g",cat:"Бакалея и крупы",allerg:["nuts"],minAge:4,vv:{sku:"VV10950",title:"Орех грецкий очищенный 150 г",pack:150,price:329}},
+
+  milk:{name:"Молоко",unit:"ml",cat:"Молочное",allerg:["lactose"],vv:{sku:"VV20114",title:"Молоко пастеризованное 3,2% 0,93 л",pack:930,price:119}},
+  kefir:{name:"Кефир",unit:"ml",cat:"Молочное",allerg:["lactose"],vv:{sku:"VV20119",title:"Кефир 1% 0,93 л",pack:930,price:99}},
+  yogurt:{name:"Йогурт натуральный",unit:"g",cat:"Молочное",allerg:["lactose"],vv:{sku:"VV20203",title:"Йогурт натуральный 3,5% 300 г",pack:300,price:95}},
+  cottage:{name:"Творог",unit:"g",cat:"Молочное",allerg:["lactose"],vv:{sku:"VV20255",title:"Творог 5% 300 г",pack:300,price:145}},
+  sour_cream:{name:"Сметана",unit:"g",cat:"Молочное",allerg:["lactose"],vv:{sku:"VV20260",title:"Сметана 15% 300 г",pack:300,price:119}},
+  cheese:{name:"Сыр",unit:"g",cat:"Молочное",allerg:["lactose"],vv:{sku:"VV20301",title:"Сыр «Российский» 200 г",pack:200,price:209}},
+
+  egg:{name:"Яйца",unit:"pcs",cat:"Мясо, рыба, яйца",allerg:["egg"],vv:{sku:"VV20410",title:"Яйца куриные С0, 10 шт",pack:10,price:119}},
+  chicken:{name:"Куриное филе",unit:"g",cat:"Мясо, рыба, яйца",allerg:[],meat:true,vv:{sku:"VV30110",title:"Филе грудки цыплёнка 600 г",pack:600,price:359}},
+  turkey:{name:"Филе индейки",unit:"g",cat:"Мясо, рыба, яйца",allerg:[],meat:true,vv:{sku:"VV30130",title:"Филе индейки 500 г",pack:500,price:439}},
+  beef:{name:"Говяжий фарш",unit:"g",cat:"Мясо, рыба, яйца",allerg:[],meat:true,vv:{sku:"VV30150",title:"Фарш говяжий 400 г",pack:400,price:419}},
+  trout:{name:"Форель",unit:"g",cat:"Мясо, рыба, яйца",allerg:["fish"],meat:true,vv:{sku:"VV30240",title:"Филе форели 300 г",pack:300,price:599}},
+  tuna:{name:"Тунец консервированный",unit:"g",cat:"Мясо, рыба, яйца",allerg:["fish"],meat:true,vv:{sku:"VV30260",title:"Тунец натуральный 185 г",pack:185,price:179}},
+
+  banana:{name:"Бананы",unit:"g",cat:"Овощи и фрукты",allerg:[],byWeight:true,vv:{sku:"VV40010",title:"Бананы (на развес)",pricePerKg:99}},
+  apple:{name:"Яблоки",unit:"g",cat:"Овощи и фрукты",allerg:[],byWeight:true,vv:{sku:"VV40020",title:"Яблоки (на развес)",pricePerKg:159}},
+  tomato:{name:"Помидоры",unit:"g",cat:"Овощи и фрукты",allerg:[],byWeight:true,vv:{sku:"VV40110",title:"Помидоры (на развес)",pricePerKg:219}},
+  cucumber:{name:"Огурцы",unit:"g",cat:"Овощи и фрукты",allerg:[],byWeight:true,vv:{sku:"VV40115",title:"Огурцы (на развес)",pricePerKg:169}},
+  potato:{name:"Картофель",unit:"g",cat:"Овощи и фрукты",allerg:[],byWeight:true,vv:{sku:"VV40120",title:"Картофель (на развес)",pricePerKg:55}},
+  carrot:{name:"Морковь",unit:"g",cat:"Овощи и фрукты",allerg:[],byWeight:true,vv:{sku:"VV40125",title:"Морковь (на развес)",pricePerKg:59}},
+  onion:{name:"Лук репчатый",unit:"g",cat:"Овощи и фрукты",allerg:[],byWeight:true,vv:{sku:"VV40130",title:"Лук репчатый (на развес)",pricePerKg:49}},
+  garlic:{name:"Чеснок",unit:"g",cat:"Овощи и фрукты",allerg:[],byWeight:true,vv:{sku:"VV40135",title:"Чеснок (на развес)",pricePerKg:399}},
+  pepper:{name:"Перец сладкий",unit:"g",cat:"Овощи и фрукты",allerg:[],byWeight:true,vv:{sku:"VV40140",title:"Перец сладкий (на развес)",pricePerKg:289}},
+  zucchini:{name:"Кабачок",unit:"g",cat:"Овощи и фрукты",allerg:[],byWeight:true,vv:{sku:"VV40150",title:"Кабачок (на развес)",pricePerKg:129}},
+  spinach:{name:"Шпинат",unit:"g",cat:"Овощи и фрукты",allerg:[],vv:{sku:"VV40210",title:"Шпинат свежий 100 г",pack:100,price:159}},
+  broccoli:{name:"Брокколи",unit:"g",cat:"Овощи и фрукты",allerg:[],vv:{sku:"VV40220",title:"Брокколи 300 г",pack:300,price:179}},
+  peas:{name:"Зелёный горошек",unit:"g",cat:"Овощи и фрукты",allerg:[],vv:{sku:"VV40230",title:"Горошек зелёный замороженный 400 г",pack:400,price:149}},
+  mushrooms:{name:"Шампиньоны",unit:"g",cat:"Овощи и фрукты",allerg:[],vv:{sku:"VV40240",title:"Шампиньоны 400 г",pack:400,price:189}},
+  berries:{name:"Ягодная смесь",unit:"g",cat:"Овощи и фрукты",allerg:[],vv:{sku:"VV40250",title:"Ягодная смесь замороженная 300 г",pack:300,price:209}},
+};
+
+/* ===== РЕЦЕПТЫ (на 1 порцию). allerg/veg/minAge выводятся из ингредиентов ===== */
+const RECIPES = [
+  // Завтраки
+  {id:"b1",t:"Овсяная каша с бананом и мёдом",m:["breakfast"],min:12,kcal:380,tags:["lowsugar"],steps:"Залейте хлопья молоком, доведите до кипения и варите 5–7 минут. Добавьте нарезанный банан и мёд.",ing:[["oats",60],["milk",200],["banana",80],["honey",12]]},
+  {id:"b2",t:"Омлет с томатами и сыром",m:["breakfast"],min:12,kcal:340,tags:["protein"],steps:"Взбейте яйца, вылейте на сковороду с каплей масла. Добавьте томаты и тёртый сыр, готовьте под крышкой 5 минут.",ing:[["egg",2],["tomato",90],["cheese",30],["olive_oil",5]]},
+  {id:"b3",t:"Творог с ягодами и грецким орехом",m:["breakfast","snack"],min:5,kcal:320,tags:["protein","lowsugar"],steps:"Разомните творог, добавьте размороженные ягоды, рубленый орех и немного мёда.",ing:[["cottage",150],["berries",60],["nuts",15],["honey",8]]},
+  {id:"b4",t:"Йогурт с овсянкой и яблоком",m:["breakfast","snack"],min:5,kcal:290,tags:["lowsugar"],steps:"Смешайте йогурт с хлопьями, дайте постоять 3 минуты, добавьте натёртое яблоко.",ing:[["yogurt",150],["oats",40],["apple",90]]},
+  {id:"b5",t:"Бутерброд с сыром и яйцом",m:["breakfast"],min:10,kcal:360,tags:["protein"],steps:"Отварите яйцо. На цельнозерновой хлеб выложите сыр, кружочки помидора и нарезанное яйцо.",ing:[["bread",80],["cheese",30],["tomato",50],["egg",1]]},
+  {id:"b6",t:"Гречневая каша на молоке",m:["breakfast"],min:18,kcal:330,tags:["lowsugar"],steps:"Отварите гречку до готовности, влейте тёплое молоко, добавьте ложку мёда.",ing:[["buckwheat",60],["milk",180],["honey",8]]},
+  {id:"b7",t:"Рисовая каша с яблоком",m:["breakfast"],min:18,kcal:320,tags:["lowsugar"],steps:"Отварите рис в молоке до мягкости, добавьте натёртое яблоко и мёд.",ing:[["rice",60],["milk",200],["apple",70],["honey",8]]},
+  {id:"b8",t:"Сырники со сметаной",m:["breakfast"],min:18,kcal:390,tags:["protein"],steps:"Смешайте творог с яйцом и хлопьями, обжарьте небольшие сырники по 3 минуты с каждой стороны, подайте со сметаной.",ing:[["cottage",150],["egg",1],["oats",25],["sour_cream",30]]},
+  {id:"b9",t:"Омлет с зеленью и сыром",m:["breakfast"],min:10,kcal:320,tags:["protein"],steps:"Взбейте яйца с ложкой молока, готовьте на сковороде, добавьте тёртый сыр.",ing:[["egg",2],["cheese",30],["milk",30]]},
+
+  // Обеды
+  {id:"l1",t:"Куриное филе с гречкой и морковью",m:["lunch","dinner"],min:20,kcal:480,tags:["protein"],steps:"Отварите гречку. Обжарьте кусочки филе с луком и морковью на масле 10–12 минут.",ing:[["chicken",150],["buckwheat",70],["carrot",60],["onion",30],["olive_oil",6]]},
+  {id:"l2",t:"Паста с томатами и сыром",m:["lunch","dinner"],min:18,kcal:520,tags:[],steps:"Отварите пасту. Протушите томаты с чесноком на масле 6 минут, смешайте с пастой, посыпьте сыром.",ing:[["pasta",100],["tomato",110],["cheese",30],["olive_oil",6],["garlic",5]]},
+  {id:"l3",t:"Рис с курицей и брокколи",m:["lunch","dinner"],min:20,kcal:470,tags:["protein"],steps:"Отварите рис. Обжарьте филе, добавьте брокколи и 3 ложки воды, тушите под крышкой 7 минут.",ing:[["rice",70],["chicken",130],["broccoli",90],["olive_oil",6]]},
+  {id:"l4",t:"Суп из красной чечевицы",m:["lunch"],min:20,kcal:360,tags:["budget"],steps:"Обжарьте лук и морковь, добавьте чечевицу, картофель и воду. Варите 15 минут, измельчите блендером.",ing:[["lentils",80],["carrot",50],["onion",30],["potato",80],["olive_oil",6]]},
+  {id:"l5",t:"Салат с форелью и шпинатом",m:["lunch","dinner"],min:12,kcal:410,tags:["protein"],steps:"Нарежьте овощи, добавьте шпинат и кусочки слабосолёной форели, заправьте маслом.",ing:[["trout",110],["cucumber",60],["tomato",60],["spinach",40],["olive_oil",6]]},
+  {id:"l6",t:"Тёплый салат с курицей",m:["lunch","dinner"],min:15,kcal:380,tags:["protein"],steps:"Обжарьте полоски филе, смешайте со свежим перцем, огурцом и шпинатом, заправьте маслом.",ing:[["chicken",130],["pepper",60],["cucumber",50],["spinach",30],["olive_oil",6]]},
+  {id:"l7",t:"Нут с тушёными овощами",m:["lunch","dinner"],min:18,kcal:400,tags:["budget","protein"],steps:"Протушите перец, лук и томаты, добавьте отварной нут, прогрейте 5 минут.",ing:[["chickpeas",90],["tomato",90],["pepper",50],["onion",30],["olive_oil",6]]},
+  {id:"l8",t:"Паста с тунцом и томатами",m:["lunch","dinner"],min:18,kcal:480,tags:["protein"],steps:"Отварите пасту. Смешайте с тунцом и протушенными томатами.",ing:[["pasta",100],["tuna",80],["tomato",90],["olive_oil",6]]},
+  {id:"l9",t:"Куриный суп с овощами",m:["lunch"],min:20,kcal:330,tags:["budget","protein"],steps:"Отварите кусочки филе с картофелем, морковью и луком 18 минут.",ing:[["chicken",100],["potato",80],["carrot",50],["onion",30]]},
+  {id:"l10",t:"Жареный рис с овощами и яйцом",m:["lunch","dinner"],min:15,kcal:420,tags:["budget"],steps:"Обжарьте лук с морковью и горошком, добавьте отварной рис и яйцо, прогрейте.",ing:[["rice",80],["egg",1],["peas",50],["carrot",40],["onion",20],["olive_oil",6]]},
+
+  // Ужины
+  {id:"d1",t:"Форель на сковороде с брокколи",m:["dinner"],min:15,kcal:430,tags:["protein"],steps:"Обжарьте филе форели по 3 минуты с каждой стороны. Брокколи отварите 5 минут, сбрызните маслом с чесноком.",ing:[["trout",150],["broccoli",110],["olive_oil",6],["garlic",4]]},
+  {id:"d2",t:"Котлеты из говядины с салатом",m:["dinner"],min:20,kcal:460,tags:["protein"],steps:"Смешайте фарш с луком и яйцом, сформируйте котлеты, обжарьте 12 минут. Подайте с салатом из огурца и помидора.",ing:[["beef",120],["onion",25],["egg",1],["cucumber",60],["tomato",60]]},
+  {id:"d3",t:"Шакшука",m:["dinner"],min:18,kcal:320,tags:["protein"],steps:"Протушите перец, лук и томаты 8 минут. Сделайте углубления, влейте яйца, готовьте под крышкой 5 минут.",ing:[["egg",2],["tomato",120],["pepper",60],["onion",30],["olive_oil",6]]},
+  {id:"d4",t:"Гречка с овощами и яйцом",m:["dinner"],min:18,kcal:360,tags:["budget"],steps:"Отварите гречку. Обжарьте лук с морковью, добавьте к гречке, сверху — глазунья.",ing:[["buckwheat",70],["egg",1],["carrot",40],["onion",20],["olive_oil",5]]},
+  {id:"d5",t:"Картофель с курицей в духовке",m:["dinner"],min:20,kcal:480,tags:["protein","budget"],steps:"Нарежьте картофель и морковь, выложите с кусочками филе, сбрызните маслом, запекайте 18 минут при 200°C.",ing:[["potato",150],["chicken",130],["carrot",40],["olive_oil",6]]},
+  {id:"d6",t:"Индейка с овощным рагу",m:["dinner"],min:20,kcal:430,tags:["protein"],steps:"Обжарьте кусочки индейки, добавьте кабачок, перец и лук, тушите 10 минут.",ing:[["turkey",140],["zucchini",90],["pepper",50],["onion",30],["olive_oil",6]]},
+  {id:"d7",t:"Запечённые овощи с сыром",m:["dinner"],min:20,kcal:340,tags:[],steps:"Нарежьте кабачок, перец и томаты, запекайте 15 минут, посыпьте сыром и верните в духовку на 3 минуты.",ing:[["zucchini",100],["pepper",60],["tomato",80],["cheese",30],["olive_oil",6]]},
+  {id:"d8",t:"Гречка с грибами",m:["dinner"],min:18,kcal:330,tags:["budget"],steps:"Обжарьте грибы с луком, смешайте с отварной гречкой.",ing:[["buckwheat",70],["mushrooms",100],["onion",30],["olive_oil",6]]},
+  {id:"d9",t:"Рыбные котлеты из форели",m:["dinner"],min:20,kcal:400,tags:["protein"],steps:"Измельчите форель с луком, добавьте яйцо, сформируйте котлеты, обжарьте 12 минут.",ing:[["trout",140],["egg",1],["onion",20],["olive_oil",6]]},
+
+  // Перекусы
+  {id:"s1",t:"Яблоко с грецкими орехами",m:["snack"],min:2,kcal:220,tags:[],steps:"Нарежьте яблоко дольками, подайте с горстью орехов.",ing:[["apple",120],["nuts",20]]},
+  {id:"s2",t:"Стакан кефира",m:["snack"],min:1,kcal:110,tags:["lowsugar"],steps:"Налейте кефир в стакан.",ing:[["kefir",200]]},
+  {id:"s3",t:"Творог с ягодами",m:["snack"],min:3,kcal:160,tags:["protein","lowsugar"],steps:"Смешайте творог с размороженными ягодами.",ing:[["cottage",100],["berries",50]]},
+  {id:"s4",t:"Банан",m:["snack"],min:1,kcal:110,tags:["lowsugar"],steps:"Простой и быстрый перекус.",ing:[["banana",120]]},
+  {id:"s5",t:"Йогурт с мёдом",m:["snack"],min:2,kcal:180,tags:[],steps:"Добавьте в натуральный йогурт ложку мёда.",ing:[["yogurt",150],["honey",10]]},
+  {id:"s6",t:"Запечённое яблоко",m:["snack"],min:12,kcal:140,tags:["lowsugar"],steps:"Запеките яблоко 10 минут, полейте ложкой мёда.",ing:[["apple",130],["honey",8]]},
+  {id:"s7",t:"Хлебцы с сыром",m:["snack"],min:3,kcal:200,tags:[],steps:"Намажьте сыр на ломтик цельнозернового хлеба.",ing:[["bread",40],["cheese",30]]},
+];
+
+// derive
+RECIPES.forEach(r=>{
+  const a=new Set(); let veg=true, minAge=0;
+  r.ing.forEach(([id])=>{ const ing=ING[id]; ing.allerg.forEach(x=>a.add(x)); if(ing.meat) veg=false; if(ing.minAge) minAge=Math.max(minAge,ing.minAge); });
+  r.allerg=[...a]; r.veg=veg; r.minAge=minAge;
+});
+
+/* ===== СОСТОЯНИЕ ===== */
+const state={adults:2, children:[6],
+  meals:new Set(["breakfast","lunch","dinner"]),
+  exclude:new Set(), prefs:new Set(), freeText:"", seed:1, llm:null};
+
+const DAYS=["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"];
+const MEAL_LABEL={breakfast:"Завтрак",lunch:"Обед",dinner:"Ужин",snack:"Перекус"};
+const CAT_ORDER=["Овощи и фрукты","Мясо, рыба, яйца","Молочное","Бакалея и крупы"];
+const $=s=>document.querySelector(s);
+
+function rng(seed){let s=seed%2147483647;if(s<=0)s+=2147483646;return()=>(s=s*16807%2147483647)/2147483647;}
+
+// возрастной коэффициент порции
+function ageFactor(age){ if(age>=14)return 1; if(age>=9)return .85; if(age>=4)return .6; if(age>=1)return .4; return .25; }
+function eaters(){return state.adults+state.children.length;}
+function servings(){return state.adults + state.children.reduce((s,a)=>s+ageFactor(a),0);}
+function youngest(){return state.children.length?Math.min(...state.children):99;}
+
+/* ===== ПОДБОР ===== */
+function poolFor(meal){
+  const ymin=youngest();
+  return RECIPES.filter(r=>{
+    if(!r.m.includes(meal)) return false;
+    for(const ex of state.exclude){ if(r.allerg.includes(ex)) return false; }   // аллергены — жёсткий фильтр
+    if(state.prefs.has("veg") && !r.veg) return false;                          // вегетарианское — жёсткий
+    if(r.minAge>ymin) return false;                                             // возрастная безопасность — жёсткий
+    return true;
+  }).map(r=>{
+    let score=0;
+    if(state.prefs.has("protein") && r.tags.includes("protein")) score+=2;
+    if(state.prefs.has("lowsugar") && r.tags.includes("lowsugar")) score+=2;
+    if(state.prefs.has("budget") && r.tags.includes("budget")) score+=2;
+    if(state.llm && state.llm.scores && state.llm.scores[r.id]!=null) score+=Number(state.llm.scores[r.id])||0; // вклад LLM
+    return {r,score};
+  }).sort((a,b)=>b.score-a.score);
+}
+
+function buildPlan(){
+  const rand=rng(state.seed);
+  const active=["breakfast","lunch","dinner","snack"].filter(m=>state.meals.has(m));
+  const pools={}; active.forEach(m=>pools[m]=poolFor(m));
+  const cursor={}; active.forEach(m=>cursor[m]=Math.floor(rand()*Math.max(1,pools[m].length)));
+  const plan=[];
+  for(let d=0;d<7;d++){
+    const day={day:DAYS[d],meals:[]};
+    active.forEach(m=>{
+      const pool=pools[m];
+      if(!pool.length){day.meals.push({meal:m,empty:true});return;}
+      day.meals.push({meal:m,r:pool[cursor[m]%pool.length].r}); cursor[m]++;
+    });
+    plan.push(day);
+  }
+  return plan;
+}
+
+function buildShopping(plan){
+  const need={}; const sv=servings();
+  plan.forEach(day=>day.meals.forEach(slot=>{ if(slot.empty)return; slot.r.ing.forEach(([id,q])=>{need[id]=(need[id]||0)+q*sv;}); }));
+  const items=[];
+  Object.entries(need).forEach(([id,amount])=>{
+    const ing=ING[id],vv=ing.vv; let qtyLabel,price;
+    if(ing.byWeight){
+      const grams=Math.round(amount/10)*10; price=Math.ceil(grams/1000*vv.pricePerKg);
+      qtyLabel=`≈ ${grams} г · ${vv.pricePerKg} ₽/кг`;
+    }else{
+      const packs=Math.max(1,Math.ceil(amount/vv.pack)); price=packs*vv.price;
+      const u=ing.unit==="pcs"?"шт":(ing.unit==="ml"?"мл":"г");
+      qtyLabel=`${packs} уп. × ${vv.pack} ${u} · ${vv.price} ₽`;
+    }
+    items.push({cat:ing.cat,title:vv.title,sku:vv.sku,qtyLabel,price,
+      url:`https://vkusvill.ru/search/?q=${encodeURIComponent(vv.title.split(" ").slice(0,2).join(" "))}`});
+  });
+  return items;
+}
+
+/* ===== LLM-СЛОЙ ПЕРСОНАЛИЗАЦИИ =====
+   Модель только ранжирует рецепты под описание семьи. Жёсткие фильтры
+   (аллергены, возраст, вегетарианское) всё равно применяются в poolFor ПОСЛЕ. */
+async function personalize(){
+  const text=state.freeText.trim();
+  if(!text){ state.llm=null; return; }
+  const candidates=RECIPES.map(r=>`${r.id}: ${r.t} [теги: ${r.tags.join(",")||"—"}; ${r.m.map(m=>MEAL_LABEL[m]).join("/")}]`).join("\n");
+  const profile=`Взрослых: ${state.adults}; дети (возраст): ${state.children.join(", ")||"нет"}.`;
+  const prompt=`Ты — помощник по планированию семейного питания. Профиль семьи: ${profile}\n`+
+    `Семья описала свои привычки в еде:\n"""${text}"""\n\n`+
+    `Доступные рецепты:\n${candidates}\n\n`+
+    `Оцени каждый рецепт от 0 до 3: насколько он соответствует стилю и предпочтениям этой семьи `+
+    `(3 — точно в их вкусе; 0 — не подходит). Верни ТОЛЬКО валидный JSON без markdown и пояснений: `+
+    `{"summary":"одно короткое предложение о выявленных предпочтениях (по-русски)","scores":{"b1":2,"l1":3, ...}}`;
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,messages:[{role:"user",content:prompt}]})});
+    if(!res.ok) throw new Error("api "+res.status);
+    const data=await res.json();
+    const out=(data.content||[]).map(c=>c.type==="text"?c.text:"").join("");
+    const parsed=JSON.parse(out.replace(/```json|```/g,"").trim());
+    state.llm={scores:parsed.scores||{},summary:parsed.summary||"",mode:"ai"};
+  }catch(e){
+    state.llm=keywordFallback(text);  // офлайн-режим
+  }
+}
+
+function keywordFallback(text){
+  const t=text.toLowerCase(); const scores={}; const hits=[];
+  const rules=[
+    [["куриц","курин"],r=>r.ing.some(([i])=>i==="chicken"),"курицу"],
+    [["рыб","форел","лосос","тунец"],r=>r.allerg.includes("fish"),"рыбу"],
+    [["паст","макарон","спагетти"],r=>r.ing.some(([i])=>i==="pasta"),"пасту"],
+    [["каш","овсян","гречнев"],r=>/каша/i.test(r.t),"каши"],
+    [["салат"],r=>/салат/i.test(r.t),"салаты"],
+    [["суп"],r=>/суп/i.test(r.t),"супы"],
+    [["вегет","без мяса","овощ"],r=>r.veg,"овощные блюда"],
+    [["белк","протеин","спорт"],r=>r.tags.includes("protein"),"белковые блюда"],
+    [["говяд","мяс","котлет"],r=>r.ing.some(([i])=>i==="beef"||i==="turkey"),"мясные блюда"],
+  ];
+  const matched=[];
+  rules.forEach(([kw,test,label])=>{ if(kw.some(k=>t.includes(k))){ matched.push(label);
+    RECIPES.forEach(r=>{ if(test(r)) scores[r.id]=(scores[r.id]||0)+2; }); }});
+  return {scores,summary:matched.length?("Учли ключевые слова: "+matched.join(", ")+"."):"",mode:"kw"};
+}
+
+/* ===== РЕНДЕР ===== */
+function renderResults(){
+  const plan=buildPlan(); const items=buildShopping(plan);
+  const total=items.reduce((s,i)=>s+i.price,0);
+  const active=["breakfast","lunch","dinner","snack"].filter(m=>state.meals.has(m));
+  const kidsTxt=state.children.length?` + дети ${state.children.join(", ")} л.`:"";
+  $("#summary").innerHTML=`<b>${eaters()} чел.</b> (${state.adults} взр.${kidsTxt}) · ${active.map(m=>MEAL_LABEL[m].toLowerCase()).join(", ")} · <b>ВкусВилл</b>`;
+  $("#menu-sub").textContent="7 дней · все рецепты ≤ 20 мин";
+
+  const note=$("#ainote"); note.className="ai-note";
+  if(state.llm&&state.llm.summary){
+    note.classList.add("on"); if(state.llm.mode==="kw") note.classList.add("kw");
+    note.innerHTML=(state.llm.mode==="ai"?"<b>Меню подобрано под ваше описание.</b> ":"<b>Подбор по ключевым словам (офлайн).</b> ")+state.llm.summary;
+  }
+
+  $("#week").innerHTML=plan.map(day=>`<div class="day"><div class="dh">${day.day}</div><div class="meals">${
+    day.meals.map(slot=>{
+      if(slot.empty) return `<div class="empty">${MEAL_LABEL[slot.meal]}: нет рецептов под фильтры — ослабьте ограничения.</div>`;
+      const r=slot.r;
+      return `<div class="meal"><div class="mt">${MEAL_LABEL[slot.meal]}</div><div class="name">${r.t}</div>
+        <div class="meta"><span>⏱ ${r.min} мин</span><span>≈ ${r.kcal} ккал/порц.</span></div>
+        <details><summary>Рецепт и состав</summary><p>${r.steps}</p>
+        <div class="ings">Состав: ${r.ing.map(([id])=>ING[id].name.toLowerCase()).join(", ")}</div></details></div>`;
+    }).join("")
+  }</div></div>`).join("");
+
+  const byCat={}; items.forEach(i=>{(byCat[i.cat]=byCat[i.cat]||[]).push(i);});
+  const cats=[...new Set([...CAT_ORDER,...Object.keys(byCat)])].filter(c=>byCat[c]);
+  $("#shop").innerHTML=cats.map(c=>`<div class="cat"><h3>${c}</h3>${
+    byCat[c].sort((a,b)=>b.price-a.price).map(i=>`<div class="row"><div class="info">
+      <div class="ttl">${i.title}</div><div class="sub">${i.qtyLabel} · арт. ${i.sku}</div></div>
+      <div class="price">${i.price} ₽</div>
+      <a class="go" href="${i.url}" target="_blank" rel="noopener noreferrer">в ВкусВилл →</a></div>`).join("")
+  }</div>`).join("")+`<div class="total"><span class="t1">Примерная сумма на неделю</span><span class="t2">${total.toLocaleString("ru-RU")} ₽</span></div>`;
+
+  $("#form-view").style.display="none"; $("#results").classList.add("show"); window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function runGenerate(regenOnly){
+  const btn=$("#generate");
+  if(!regenOnly){ btn.disabled=true; btn.textContent="Подбираем меню…"; state.freeText=$("#freetext").value;
+    await personalize(); btn.disabled=false; btn.textContent="Составить меню на неделю"; }
+  state.seed=Math.floor(Math.random()*1e6)+1; renderResults();
+}
+
+/* ===== UI: дети ===== */
+function renderKids(){
+  const box=$("#kids");
+  if(!state.children.length){ box.innerHTML=`<div class="nokids">Без детей — порции считаем на взрослых.</div>`; return; }
+  box.innerHTML=state.children.map((age,i)=>`<div class="kid">
+    <label>Ребёнок ${i+1}</label>
+    <input type="number" min="0" max="17" value="${age}" data-kid="${i}" aria-label="возраст ребёнка ${i+1}"> лет
+    <button class="rm" data-rmkid="${i}" aria-label="убрать">✕</button></div>`).join("");
+  box.querySelectorAll("[data-kid]").forEach(inp=>inp.addEventListener("input",e=>{
+    let v=parseInt(e.target.value,10); if(isNaN(v))v=0; v=Math.max(0,Math.min(17,v));
+    state.children[+e.target.dataset.kid]=v; }));
+  box.querySelectorAll("[data-rmkid]").forEach(b=>b.addEventListener("click",()=>{
+    state.children.splice(+b.dataset.rmkid,1); renderKids(); }));
+}
+
+/* ===== ОБРАБОТЧИКИ ===== */
+document.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>{
+  state.adults=Math.max(1,Math.min(10,state.adults+ +b.dataset.d)); $("#v-adults").textContent=state.adults; }));
+$("#addkid").addEventListener('click',()=>{ if(state.children.length<8){state.children.push(6);renderKids();} });
+$("#meals").addEventListener('click',e=>{const b=e.target.closest('[data-meal]');if(!b)return;
+  const m=b.dataset.meal,on=b.getAttribute('aria-pressed')==='true'; if(on&&state.meals.size===1)return;
+  on?state.meals.delete(m):state.meals.add(m); b.setAttribute('aria-pressed',String(!on));});
+$("#exclude").addEventListener('click',e=>{const b=e.target.closest('[data-ex]');if(!b)return;
+  const x=b.dataset.ex,on=b.getAttribute('aria-pressed')==='true'; on?state.exclude.delete(x):state.exclude.add(x);
+  b.setAttribute('aria-pressed',String(!on));});
+$("#prefs").addEventListener('click',e=>{const b=e.target.closest('[data-pref]');if(!b)return;
+  const p=b.dataset.pref,on=b.getAttribute('aria-pressed')==='true'; on?state.prefs.delete(p):state.prefs.add(p);
+  b.setAttribute('aria-pressed',String(!on));});
+
+$("#generate").addEventListener('click',()=>runGenerate(false));
+$("#shuffle").addEventListener('click',()=>runGenerate(true));
+$("#back").addEventListener('click',()=>{$("#results").classList.remove("show");$("#form-view").style.display="block";window.scrollTo({top:0,behavior:"smooth"});});
+$("#demo").addEventListener('click',()=>{
+  $("#freetext").value="Чаще всего готовим курицу и рыбу, дети любят пасту и каши, красное мясо едим редко. На завтрак — что-то быстрое.";
+  state.prefs.add("protein"); document.querySelector('[data-pref="protein"]').setAttribute('aria-pressed','true');
+  runGenerate(false);
+});
+
+renderKids();
+</script>
+</body>
+</html>
