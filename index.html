@@ -110,6 +110,8 @@
   .meal summary::-webkit-details-marker{display:none}
   .meal details p{font-size:12.5px;color:var(--ink);margin:8px 0 0;line-height:1.5}
   .meal .ings{font-size:12px;color:var(--muted);margin-top:6px}
+  .meal .sub-dish{font-size:13px;margin:6px 0 2px;padding-left:10px;border-left:3px solid var(--green-soft)}
+  .meal .sub-dish .lbl{font-size:10px;color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
   .empty{padding:10px 8px;font-size:13px;color:var(--carrot)}
 
   .shop{padding:8px 4px}
@@ -132,16 +134,12 @@
 </head>
 <body>
 <div class="wrap">
-  <header class="top">
-    <div class="mark">м</div>
-    <div class="brand">Меню недели<small>план питания · магазин ВкусВилл</small></div>
-  </header>
 
   <!-- FORM -->
   <section id="form-view" class="card hero">
     <div class="form">
       <h1 class="display">Здоровое меню<br>на неделю за минуту</h1>
-      <p class="lead">Несколько вопросов — и готово меню для всей семьи, простые рецепты до&nbsp;20&nbsp;минут и список покупок с товарами ВкусВилл.</p>
+      <p class="lead">Сбалансированное меню: долгие углеводы и белок, много овощей, разные виды мяса, рыбы и морепродуктов. Простые рецепты до&nbsp;20&nbsp;минут и список покупок ВкусВилл.</p>
 
       <div class="field">
         <div class="q">Кто в семье?</div>
@@ -196,7 +194,7 @@
       <div class="field">
         <div class="q">Опишите, что вы обычно готовите</div>
         <div class="hint">Свободным текстом — мы подстроим меню под привычки вашей семьи.</div>
-        <textarea class="free" id="freetext" placeholder="Например: чаще готовим курицу и рыбу, дети любят пасту и каши, мясо едим редко, на завтрак — что-то быстрое…"></textarea>
+        <textarea class="free" id="freetext" placeholder="Необязательно: что исключить или что любите — «без свинины», «дети не едят рыбу», «чаще индейку»…"></textarea>
       </div>
 
       <div class="field">
@@ -212,7 +210,7 @@
         <button class="cta" id="generate">Составить меню на неделю</button>
         <button class="ghost" id="demo">Заполнить примером</button>
       </div>
-      <p class="disclaimer">Демоверсия. Названия товаров, цены и SKU — иллюстративные, в формате каталога ВкусВилл. Персонализация по описанию работает, когда инструмент запущен как артефакт в Claude; при открытии файла локально она переключается на подбор по ключевым словам.</p>
+      <p class="disclaimer">Завтрак: долгие углеводы + белок · обед: суп + мясо/рыба с гарниром + овощной салат · ужин: белок + овощи · перекус: кисломолочное, фрукты или орехи. Блюда не повторяются в течение недели; ротация по 4 неделям.</p>
     </div>
   </section>
 
@@ -261,9 +259,14 @@ const ING = {
   egg:{name:"Яйца",unit:"pcs",cat:"Мясо, рыба, яйца",allerg:["egg"],vv:{sku:"VV20410",title:"Яйца куриные С0, 10 шт",pack:10,price:119}},
   chicken:{name:"Куриное филе",unit:"g",cat:"Мясо, рыба, яйца",allerg:[],meat:true,vv:{sku:"VV30110",title:"Филе грудки цыплёнка 600 г",pack:600,price:359}},
   turkey:{name:"Филе индейки",unit:"g",cat:"Мясо, рыба, яйца",allerg:[],meat:true,vv:{sku:"VV30130",title:"Филе индейки 500 г",pack:500,price:439}},
+  rabbit:{name:"Мясо кролика",unit:"g",cat:"Мясо, рыба, яйца",allerg:[],meat:true,vv:{sku:"VV30145",title:"Филе кролика 400 г",pack:400,price:549}},
   beef:{name:"Говяжий фарш",unit:"g",cat:"Мясо, рыба, яйца",allerg:[],meat:true,vv:{sku:"VV30150",title:"Фарш говяжий 400 г",pack:400,price:419}},
   trout:{name:"Форель",unit:"g",cat:"Мясо, рыба, яйца",allerg:["fish"],meat:true,vv:{sku:"VV30240",title:"Филе форели 300 г",pack:300,price:599}},
+  salmon:{name:"Лосось",unit:"g",cat:"Мясо, рыба, яйца",allerg:["fish"],meat:true,vv:{sku:"VV30245",title:"Филе лосося 300 г",pack:300,price:649}},
+  cod:{name:"Треска",unit:"g",cat:"Мясо, рыба, яйца",allerg:["fish"],meat:true,vv:{sku:"VV30250",title:"Филе трески 400 г",pack:400,price:479}},
   tuna:{name:"Тунец консервированный",unit:"g",cat:"Мясо, рыба, яйца",allerg:["fish"],meat:true,vv:{sku:"VV30260",title:"Тунец натуральный 185 г",pack:185,price:179}},
+  shrimp:{name:"Креветки",unit:"g",cat:"Мясо, рыба, яйца",allerg:["fish"],meat:true,vv:{sku:"VV30270",title:"Креветки очищенные 200 г",pack:200,price:399}},
+  pork:{name:"Свиная вырезка",unit:"g",cat:"Мясо, рыба, яйца",allerg:[],meat:true,vv:{sku:"VV30155",title:"Свиная вырезка 500 г",pack:500,price:389}},
 
   banana:{name:"Бананы",unit:"g",cat:"Овощи и фрукты",allerg:[],byWeight:true,vv:{sku:"VV40010",title:"Бананы (на развес)",pricePerKg:99}},
   apple:{name:"Яблоки",unit:"g",cat:"Овощи и фрукты",allerg:[],byWeight:true,vv:{sku:"VV40020",title:"Яблоки (на развес)",pricePerKg:159}},
@@ -282,63 +285,323 @@ const ING = {
   berries:{name:"Ягодная смесь",unit:"g",cat:"Овощи и фрукты",allerg:[],vv:{sku:"VV40250",title:"Ягодная смесь замороженная 300 г",pack:300,price:209}},
 };
 
-/* ===== РЕЦЕПТЫ (на 1 порцию). allerg/veg/minAge выводятся из ингредиентов ===== */
-const RECIPES = [
-  // Завтраки
-  {id:"b1",t:"Овсяная каша с бананом и мёдом",m:["breakfast"],min:12,kcal:380,tags:["lowsugar"],steps:"Залейте хлопья молоком, доведите до кипения и варите 5–7 минут. Добавьте нарезанный банан и мёд.",ing:[["oats",60],["milk",200],["banana",80],["honey",12]]},
-  {id:"b2",t:"Омлет с томатами и сыром",m:["breakfast"],min:12,kcal:340,tags:["protein"],steps:"Взбейте яйца, вылейте на сковороду с каплей масла. Добавьте томаты и тёртый сыр, готовьте под крышкой 5 минут.",ing:[["egg",2],["tomato",90],["cheese",30],["olive_oil",5]]},
-  {id:"b3",t:"Творог с ягодами и грецким орехом",m:["breakfast","snack"],min:5,kcal:320,tags:["protein","lowsugar"],steps:"Разомните творог, добавьте размороженные ягоды, рубленый орех и немного мёда.",ing:[["cottage",150],["berries",60],["nuts",15],["honey",8]]},
-  {id:"b4",t:"Йогурт с овсянкой и яблоком",m:["breakfast","snack"],min:5,kcal:290,tags:["lowsugar"],steps:"Смешайте йогурт с хлопьями, дайте постоять 3 минуты, добавьте натёртое яблоко.",ing:[["yogurt",150],["oats",40],["apple",90]]},
-  {id:"b5",t:"Бутерброд с сыром и яйцом",m:["breakfast"],min:10,kcal:360,tags:["protein"],steps:"Отварите яйцо. На цельнозерновой хлеб выложите сыр, кружочки помидора и нарезанное яйцо.",ing:[["bread",80],["cheese",30],["tomato",50],["egg",1]]},
-  {id:"b6",t:"Гречневая каша на молоке",m:["breakfast"],min:18,kcal:330,tags:["lowsugar"],steps:"Отварите гречку до готовности, влейте тёплое молоко, добавьте ложку мёда.",ing:[["buckwheat",60],["milk",180],["honey",8]]},
-  {id:"b7",t:"Рисовая каша с яблоком",m:["breakfast"],min:18,kcal:320,tags:["lowsugar"],steps:"Отварите рис в молоке до мягкости, добавьте натёртое яблоко и мёд.",ing:[["rice",60],["milk",200],["apple",70],["honey",8]]},
-  {id:"b8",t:"Сырники со сметаной",m:["breakfast"],min:18,kcal:390,tags:["protein"],steps:"Смешайте творог с яйцом и хлопьями, обжарьте небольшие сырники по 3 минуты с каждой стороны, подайте со сметаной.",ing:[["cottage",150],["egg",1],["oats",25],["sour_cream",30]]},
-  {id:"b9",t:"Омлет с зеленью и сыром",m:["breakfast"],min:10,kcal:320,tags:["protein"],steps:"Взбейте яйца с ложкой молока, готовьте на сковороде, добавьте тёртый сыр.",ing:[["egg",2],["cheese",30],["milk",30]]},
+/* ===== РЕЦЕПТЫ — сбалансированное меню по структуре приёма пищи =====
+   Завтрак: долгие углеводы + белок · обед: суп + основное + салат
+   Ужин: белок + овощи + кисломолочное · перекус: кефир/фрукты/орехи/углеводы */
+const SLOW_CARB = new Set(["oats","buckwheat","rice","bread","lentils","chickpeas","pasta"]);
 
-  // Обеды
-  {id:"l1",t:"Куриное филе с гречкой и морковью",m:["lunch","dinner"],min:20,kcal:480,tags:["protein"],steps:"Отварите гречку. Обжарьте кусочки филе с луком и морковью на масле 10–12 минут.",ing:[["chicken",150],["buckwheat",70],["carrot",60],["onion",30],["olive_oil",6]]},
-  {id:"l2",t:"Паста с томатами и сыром",m:["lunch","dinner"],min:18,kcal:520,tags:[],steps:"Отварите пасту. Протушите томаты с чесноком на масле 6 минут, смешайте с пастой, посыпьте сыром.",ing:[["pasta",100],["tomato",110],["cheese",30],["olive_oil",6],["garlic",5]]},
-  {id:"l3",t:"Рис с курицей и брокколи",m:["lunch","dinner"],min:20,kcal:470,tags:["protein"],steps:"Отварите рис. Обжарьте филе, добавьте брокколи и 3 ложки воды, тушите под крышкой 7 минут.",ing:[["rice",70],["chicken",130],["broccoli",90],["olive_oil",6]]},
-  {id:"l4",t:"Суп из красной чечевицы",m:["lunch"],min:20,kcal:360,tags:["budget"],steps:"Обжарьте лук и морковь, добавьте чечевицу, картофель и воду. Варите 15 минут, измельчите блендером.",ing:[["lentils",80],["carrot",50],["onion",30],["potato",80],["olive_oil",6]]},
-  {id:"l5",t:"Салат с форелью и шпинатом",m:["lunch","dinner"],min:12,kcal:410,tags:["protein"],steps:"Нарежьте овощи, добавьте шпинат и кусочки слабосолёной форели, заправьте маслом.",ing:[["trout",110],["cucumber",60],["tomato",60],["spinach",40],["olive_oil",6]]},
-  {id:"l6",t:"Тёплый салат с курицей",m:["lunch","dinner"],min:15,kcal:380,tags:["protein"],steps:"Обжарьте полоски филе, смешайте со свежим перцем, огурцом и шпинатом, заправьте маслом.",ing:[["chicken",130],["pepper",60],["cucumber",50],["spinach",30],["olive_oil",6]]},
-  {id:"l7",t:"Нут с тушёными овощами",m:["lunch","dinner"],min:18,kcal:400,tags:["budget","protein"],steps:"Протушите перец, лук и томаты, добавьте отварной нут, прогрейте 5 минут.",ing:[["chickpeas",90],["tomato",90],["pepper",50],["onion",30],["olive_oil",6]]},
-  {id:"l8",t:"Паста с тунцом и томатами",m:["lunch","dinner"],min:18,kcal:480,tags:["protein"],steps:"Отварите пасту. Смешайте с тунцом и протушенными томатами.",ing:[["pasta",100],["tuna",80],["tomato",90],["olive_oil",6]]},
-  {id:"l9",t:"Куриный суп с овощами",m:["lunch"],min:20,kcal:330,tags:["budget","protein"],steps:"Отварите кусочки филе с картофелем, морковью и луком 18 минут.",ing:[["chicken",100],["potato",80],["carrot",50],["onion",30]]},
-  {id:"l10",t:"Жареный рис с овощами и яйцом",m:["lunch","dinner"],min:15,kcal:420,tags:["budget"],steps:"Обжарьте лук с морковью и горошком, добавьте отварной рис и яйцо, прогрейте.",ing:[["rice",80],["egg",1],["peas",50],["carrot",40],["onion",20],["olive_oil",6]]},
+function buildRecipeDatabase(){
+  const out=[]; let n=1;
+  const add=r=>out.push({min:15,kcal:350,tags:[],steps:"",proteins:[],...r,id:r.id||("r"+(n++))});
 
-  // Ужины
-  {id:"d1",t:"Форель на сковороде с брокколи",m:["dinner"],min:15,kcal:430,tags:["protein"],steps:"Обжарьте филе форели по 3 минуты с каждой стороны. Брокколи отварите 5 минут, сбрызните маслом с чесноком.",ing:[["trout",150],["broccoli",110],["olive_oil",6],["garlic",4]]},
-  {id:"d2",t:"Котлеты из говядины с салатом",m:["dinner"],min:20,kcal:460,tags:["protein"],steps:"Смешайте фарш с луком и яйцом, сформируйте котлеты, обжарьте 12 минут. Подайте с салатом из огурца и помидора.",ing:[["beef",120],["onion",25],["egg",1],["cucumber",60],["tomato",60]]},
-  {id:"d3",t:"Шакшука",m:["dinner"],min:18,kcal:320,tags:["protein"],steps:"Протушите перец, лук и томаты 8 минут. Сделайте углубления, влейте яйца, готовьте под крышкой 5 минут.",ing:[["egg",2],["tomato",120],["pepper",60],["onion",30],["olive_oil",6]]},
-  {id:"d4",t:"Гречка с овощами и яйцом",m:["dinner"],min:18,kcal:360,tags:["budget"],steps:"Отварите гречку. Обжарьте лук с морковью, добавьте к гречке, сверху — глазунья.",ing:[["buckwheat",70],["egg",1],["carrot",40],["onion",20],["olive_oil",5]]},
-  {id:"d5",t:"Картофель с курицей в духовке",m:["dinner"],min:20,kcal:480,tags:["protein","budget"],steps:"Нарежьте картофель и морковь, выложите с кусочками филе, сбрызните маслом, запекайте 18 минут при 200°C.",ing:[["potato",150],["chicken",130],["carrot",40],["olive_oil",6]]},
-  {id:"d6",t:"Индейка с овощным рагу",m:["dinner"],min:20,kcal:430,tags:["protein"],steps:"Обжарьте кусочки индейки, добавьте кабачок, перец и лук, тушите 10 минут.",ing:[["turkey",140],["zucchini",90],["pepper",50],["onion",30],["olive_oil",6]]},
-  {id:"d7",t:"Запечённые овощи с сыром",m:["dinner"],min:20,kcal:340,tags:[],steps:"Нарежьте кабачок, перец и томаты, запекайте 15 минут, посыпьте сыром и верните в духовку на 3 минуты.",ing:[["zucchini",100],["pepper",60],["tomato",80],["cheese",30],["olive_oil",6]]},
-  {id:"d8",t:"Гречка с грибами",m:["dinner"],min:18,kcal:330,tags:["budget"],steps:"Обжарьте грибы с луком, смешайте с отварной гречкой.",ing:[["buckwheat",70],["mushrooms",100],["onion",30],["olive_oil",6]]},
-  {id:"d9",t:"Рыбные котлеты из форели",m:["dinner"],min:20,kcal:400,tags:["protein"],steps:"Измельчите форель с луком, добавьте яйцо, сформируйте котлеты, обжарьте 12 минут.",ing:[["trout",140],["egg",1],["onion",20],["olive_oil",6]]},
+  /* ========== ЗАВТРАК: долгие углеводы + белок (курировано) ========== */
+  const breakfasts=[
+    {t:"Овсянка с творогом и ягодами",ing:[["oats",55],["cottage",80],["berries",50],["honey",8]],
+      steps:"Залейте овсяные хлопья 150 мл воды или молока, варите 5–7 минут до загустения. Снимите с огня, вмешайте творог, сверху выложите ягоды и полейте мёдом."},
+    {t:"Гречневая каша с яйцом и шпинатом",ing:[["buckwheat",65],["egg",2],["spinach",40],["olive_oil",5]],
+      steps:"Отварите гречку 15 минут. На сковороде с каплей масла обжарьте шпинат 2 минуты и приготовьте глазунью из 2 яиц. Выложите яйца и шпинат поверх гречки."},
+    {t:"Рисовая каша на молоке с яблоком",ing:[["rice",55],["milk",150],["apple",60],["honey",6]],
+      steps:"Отварите рис в молоке 15 минут до мягкости. Добавьте натёртое яблоко и ложку мёда, перемешайте."},
+    {t:"Тост с сыром, яйцом и томатом",ing:[["bread",75],["egg",2],["cheese",25],["tomato",50]],
+      steps:"Отварите 2 яйца и нарежьте. На подсушенный цельнозерновой хлеб выложите сыр, кружочки помидора и яйцо."},
+    {t:"Омлет с сыром и томатами",ing:[["egg",2],["cheese",25],["tomato",60],["bread",40]],
+      steps:"Взбейте 2 яйца со щепоткой соли, вылейте на разогретую сковороду. Добавьте нарезанные томаты и тёртый сыр, готовьте под крышкой 4 минуты. Подавайте с ломтиком цельнозернового хлеба."},
+    {t:"Творожная запеканка с ягодами",ing:[["cottage",120],["egg",1],["oats",30],["berries",40]],
+      steps:"Смешайте творог, яйцо и хлопья, выложите в форму, сверху распределите ягоды. Запекайте при 180 °C 18 минут."},
+    {t:"Сырники со сметаной",ing:[["cottage",130],["egg",1],["oats",25],["sour_cream",30]],
+      steps:"Смешайте творог с яйцом и измельчёнными хлопьями, сформируйте сырники. Обжарьте по 3 минуты с каждой стороны, подавайте со сметаной."},
+    {t:"Овсянка с бананом и грецким орехом",ing:[["oats",55],["milk",150],["banana",70],["nuts",10]],
+      steps:"Сварите хлопья на молоке 6 минут. Добавьте нарезанный банан и рубленые грецкие орехи."},
+    {t:"Гречка с индейкой и морковью",ing:[["buckwheat",60],["turkey",70],["carrot",35],["olive_oil",4]],
+      steps:"Отварите гречку. Нарежьте индейку и обжарьте с тёртой морковью 8 минут, затем смешайте с гречкой."},
+    {t:"Творожная масса с бананом и хлопьями",ing:[["cottage",140],["banana",70],["oats",25],["honey",6]],
+      steps:"Разомните творог с нарезанным бананом, добавьте хлопья и ложку мёда, перемешайте."},
+    {t:"Рисовая каша с творогом",ing:[["rice",55],["milk",130],["cottage",60],["honey",6]],
+      steps:"Отварите рис в молоке 15 минут. Тёплую кашу смешайте с творогом и мёдом."},
+    {t:"Омлет с овощами и тостом",ing:[["egg",2],["pepper",40],["tomato",40],["bread",40]],
+      steps:"Обжарьте нарезанные перец и томаты 3 минуты. Залейте 2 взбитыми яйцами, готовьте под крышкой 4 минуты. Подавайте с ломтиком хлеба."},
+    {t:"Овсянка с яблоком и корицей",ing:[["oats",55],["milk",150],["apple",70],["honey",6]],
+      steps:"Сварите хлопья на молоке 6 минут. Добавьте натёртое яблоко, мёд и щепотку корицы."},
+    {t:"Бутерброд с курицей и овощами",ing:[["bread",70],["chicken",60],["cucumber",40],["tomato",40]],
+      steps:"Отварите и нарежьте куриное филе. Соберите бутерброд из цельнозернового хлеба с курицей, огурцом и помидором."},
+    {t:"Гречка с яйцом и сыром",ing:[["buckwheat",60],["egg",2],["cheese",25]],
+      steps:"Отварите гречку. Приготовьте глазунью, посыпьте тёртым сыром и подавайте с гречкой."},
+    {t:"Омлет с индейкой и тостом",ing:[["egg",2],["turkey",50],["tomato",40],["bread",40]],
+      steps:"Обжарьте нарезанную индейку 5 минут, залейте 2 взбитыми яйцами с томатами, готовьте под крышкой 4 минуты. Подавайте с хлебом."},
+    {t:"Овсяноблин с творогом и ягодами",ing:[["oats",40],["egg",1],["cottage",70],["berries",30]],
+      steps:"Смешайте хлопья с яйцом, вылейте на сковороду как блин и обжарьте по 2 минуты с каждой стороны. Внутрь положите творог с ягодами."},
+    {t:"Рис с яйцом и зелёным горошком",ing:[["rice",60],["egg",1],["peas",40],["carrot",30]],
+      steps:"Отварите рис. Обжарьте морковь и горошек 4 минуты, вбейте яйцо, перемешайте и соедините с рисом."},
+    {t:"Тост с лососем и яйцом",ing:[["bread",70],["salmon",50],["egg",1],["cucumber",30]],
+      steps:"Отварите яйцо. На цельнозерновой хлеб выложите ломтики слабосолёного лосося, яйцо и тонкий огурец."},
+    {t:"Чечевица с яйцом и овощами",ing:[["lentils",70],["egg",1],["carrot",35],["onion",20]],
+      steps:"Отварите чечевицу с морковью и луком 18 минут. Подавайте с глазуньей сверху."},
+    {t:"Творожная запеканка с гречкой",ing:[["cottage",120],["egg",1],["buckwheat",40],["honey",8]],
+      steps:"Смешайте творог, яйцо и отварную гречку, выложите в форму. Запекайте при 180 °C 20 минут, полейте мёдом."},
+    {t:"Овсянка с сыром и яйцом",ing:[["oats",55],["egg",2],["cheese",25],["milk",100]],
+      steps:"Сварите хлопья на молоке. Добавьте тёртый сыр и подавайте с отварным яйцом."},
+    {t:"Гречневые оладьи со сметаной",ing:[["buckwheat",60],["egg",1],["milk",60],["sour_cream",25]],
+      steps:"Смешайте отварную гречку с яйцом и молоком. Обжарьте небольшие оладьи по 2 минуты с каждой стороны, подавайте со сметаной."},
+    {t:"Тост с творогом и томатом",ing:[["bread",70],["cottage",60],["tomato",40]],
+      steps:"Намажьте творог на подсушенный хлеб, сверху выложите кружочки помидора и слегка посолите."},
+  ];
+  breakfasts.forEach(b=>add({...b,m:["breakfast"],role:"breakfast",min:12,kcal:b.kcal||360,tags:["slow_carb","protein"]}));
 
-  // Перекусы
-  {id:"s1",t:"Яблоко с грецкими орехами",m:["snack"],min:2,kcal:220,tags:[],steps:"Нарежьте яблоко дольками, подайте с горстью орехов.",ing:[["apple",120],["nuts",20]]},
-  {id:"s2",t:"Стакан кефира",m:["snack"],min:1,kcal:110,tags:["lowsugar"],steps:"Налейте кефир в стакан.",ing:[["kefir",200]]},
-  {id:"s3",t:"Творог с ягодами",m:["snack"],min:3,kcal:160,tags:["protein","lowsugar"],steps:"Смешайте творог с размороженными ягодами.",ing:[["cottage",100],["berries",50]]},
-  {id:"s4",t:"Банан",m:["snack"],min:1,kcal:110,tags:["lowsugar"],steps:"Простой и быстрый перекус.",ing:[["banana",120]]},
-  {id:"s5",t:"Йогурт с мёдом",m:["snack"],min:2,kcal:180,tags:[],steps:"Добавьте в натуральный йогурт ложку мёда.",ing:[["yogurt",150],["honey",10]]},
-  {id:"s6",t:"Запечённое яблоко",m:["snack"],min:12,kcal:140,tags:["lowsugar"],steps:"Запеките яблоко 10 минут, полейте ложкой мёда.",ing:[["apple",130],["honey",8]]},
-  {id:"s7",t:"Хлебцы с сыром",m:["snack"],min:3,kcal:200,tags:[],steps:"Намажьте сыр на ломтик цельнозернового хлеба.",ing:[["bread",40],["cheese",30]]},
-];
+  /* ========== ОБЕД: супы (курировано) ========== */
+  const soups=[
+    {t:"Куриный суп с овощами",ing:[["chicken",90],["potato",70],["carrot",45],["onion",25]],proteins:["chicken"],steps:"Куриное филе залейте водой и варите 15 минут. Добавьте нарезанные картофель, морковь и лук, варите ещё 12 минут и посолите."},
+    {t:"Суп из индейки с картофелем",ing:[["turkey",90],["potato",70],["carrot",45],["onion",25]],proteins:["turkey"],steps:"Индейку отварите 15 минут. Добавьте картофель, морковь и лук, варите до мягкости овощей 12 минут."},
+    {t:"Суп из кролика",ing:[["rabbit",85],["potato",70],["carrot",40],["onion",25]],proteins:["rabbit"],steps:"Мясо кролика варите 25 минут до мягкости. Добавьте овощи и варите ещё 12 минут."},
+    {t:"Говяжий суп с овощами",ing:[["beef",85],["potato",70],["carrot",45],["onion",25]],proteins:["beef"],steps:"Говядину варите 25 минут. Добавьте картофель, морковь и лук, варите 12 минут и посолите."},
+    {t:"Рыбный суп с треской",ing:[["cod",90],["potato",65],["carrot",40],["onion",25]],proteins:["fish"],steps:"В кипящую воду положите картофель, морковь и лук, варите 10 минут. Добавьте кусочки трески и варите ещё 8 минут."},
+    {t:"Уха с лососем",ing:[["salmon",90],["potato",60],["carrot",40],["onion",20]],proteins:["fish"],steps:"Отварите картофель, морковь и лук 10 минут. Добавьте лосось и варите 8 минут, посолите."},
+    {t:"Суп с форелью",ing:[["trout",90],["potato",60],["carrot",40],["onion",20]],proteins:["fish"],steps:"Отварите овощи 10 минут, добавьте форель и варите 8 минут."},
+    {t:"Чечевичный суп",ing:[["lentils",80],["carrot",45],["onion",25],["potato",55]],proteins:[],tags:["budget"],steps:"Обжарьте лук и морковь 5 минут. Добавьте красную чечевицу, картофель и воду, варите 18 минут. По желанию измельчите блендером."},
+    {t:"Овощной суп с кабачком",ing:[["zucchini",80],["carrot",45],["potato",60],["onion",25]],proteins:[],tags:["budget"],steps:"Нарежьте кабачок, морковь, картофель и лук, залейте водой и варите 18 минут, посолите."},
+    {t:"Грибной суп",ing:[["mushrooms",100],["potato",60],["onion",25],["carrot",35]],proteins:[],steps:"Обжарьте грибы с луком 7 минут. Добавьте картофель, морковь и воду, варите 15 минут."},
+    {t:"Суп с нутом и шпинатом",ing:[["chickpeas",70],["spinach",40],["carrot",35],["onion",20]],proteins:[],tags:["budget"],steps:"Обжарьте лук и морковь, добавьте нут и воду, варите 12 минут. В конце добавьте шпинат и прогрейте 2 минуты."},
+    {t:"Гороховый суп с курицей",ing:[["chicken",80],["peas",60],["carrot",40],["onion",20]],proteins:["chicken"],steps:"Отварите курицу 15 минут. Добавьте зелёный горошек, морковь и лук, варите 10 минут."},
+    {t:"Куриный суп с рисом",ing:[["chicken",85],["rice",40],["carrot",40],["onion",20]],proteins:["chicken"],steps:"Отварите курицу 15 минут. Добавьте рис, морковь и лук, варите 15 минут до готовности риса."},
+    {t:"Суп с фрикадельками из индейки",ing:[["turkey",95],["potato",65],["carrot",40],["onion",25]],proteins:["turkey"],steps:"Сформируйте небольшие фрикадельки из фарша индейки. Отварите картофель, морковь и лук 10 минут, опустите фрикадельки и варите ещё 10 минут."},
+    {t:"Рыбный суп с горошком",ing:[["cod",85],["peas",50],["potato",55],["carrot",35]],proteins:["fish"],steps:"Отварите картофель и морковь 10 минут. Добавьте треску и зелёный горошек, варите 8 минут."},
+    {t:"Суп-пюре из брокколи",ing:[["broccoli",110],["potato",60],["onion",20]],proteins:[],tags:["budget"],steps:"Отварите брокколи, картофель и лук 15 минут, измельчите блендером до однородного пюре."},
+  ];
+  soups.forEach(s=>add({...s,m:["lunch"],role:"soup",min:20,kcal:s.kcal||320,tags:[...(s.tags||[]),"budget"]}));
 
-// derive
-RECIPES.forEach(r=>{
-  const a=new Set(); let veg=true, minAge=0;
-  r.ing.forEach(([id])=>{ const ing=ING[id]; ing.allerg.forEach(x=>a.add(x)); if(ing.meat) veg=false; if(ing.minAge) minAge=Math.max(minAge,ing.minAge); });
-  r.allerg=[...a]; r.veg=veg; r.minAge=minAge;
+  /* ========== ОБЕД: овощные салаты (курировано) ========== */
+  const salads=[
+    {t:"Салат из огурцов и помидоров",ing:[["cucumber",80],["tomato",80],["onion",15],["olive_oil",6]],steps:"Нарежьте огурцы и помидоры дольками, тонко нашинкуйте лук. Заправьте оливковым маслом и щепоткой соли."},
+    {t:"Салат с перцем и шпинатом",ing:[["pepper",70],["spinach",45],["cucumber",50],["olive_oil",6]],steps:"Нарежьте перец и огурец соломкой, добавьте листья шпината и заправьте маслом."},
+    {t:"Салат с брокколи и огурцом",ing:[["broccoli",80],["cucumber",60],["tomato",50],["olive_oil",5]],steps:"Брокколи отварите 4 минуты и остудите. Смешайте с нарезанными огурцом и помидором, заправьте маслом."},
+    {t:"Салат с кабачком и томатами",ing:[["zucchini",70],["tomato",70],["pepper",40],["olive_oil",5]],steps:"Кабачок нарежьте тонко и обжарьте 3 минуты. Смешайте с томатами и перцем, заправьте маслом."},
+    {t:"Салат с зелёным горошком",ing:[["peas",60],["cucumber",55],["tomato",50],["olive_oil",5]],steps:"Горошек разморозьте. Смешайте с нарезанными огурцом и помидором, заправьте маслом."},
+    {t:"Салат со шпинатом и яйцом",ing:[["spinach",50],["egg",1],["cucumber",50],["olive_oil",5]],steps:"Отварите яйцо и нарежьте дольками. Смешайте со шпинатом и огурцом, заправьте маслом."},
+    {t:"Салат с морковью и яблоком",ing:[["carrot",65],["apple",60],["olive_oil",5]],steps:"Натрите морковь и яблоко на крупной тёрке, заправьте маслом."},
+    {t:"Салат с грибами и огурцом",ing:[["mushrooms",70],["cucumber",60],["tomato",50],["olive_oil",5]],steps:"Грибы обжарьте 6 минут и остудите. Смешайте с нарезанными огурцом и помидором."},
+    {t:"Салат с томатами и чесноком",ing:[["tomato",90],["cucumber",50],["garlic",3],["olive_oil",6]],steps:"Нарежьте томаты и огурцы, добавьте измельчённый чеснок и оливковое масло."},
+    {t:"Салат из свежих овощей",ing:[["tomato",70],["pepper",55],["cucumber",60],["carrot",40],["olive_oil",6]],steps:"Нарежьте все овощи кубиками, перемешайте и заправьте маслом."},
+    {t:"Салат с брокколи и перцем",ing:[["broccoli",75],["pepper",55],["cucumber",40],["olive_oil",5]],steps:"Брокколи отварите 4 минуты. Смешайте с перцем и огурцом, заправьте маслом."},
+    {t:"Салат с морковью и горошком",ing:[["carrot",55],["peas",50],["cucumber",50],["olive_oil",5]],steps:"Смешайте тёртую морковь, горошек и нарезанный огурец, заправьте маслом."},
+    {t:"Салат с кабачком и брокколи",ing:[["zucchini",65],["broccoli",70],["olive_oil",5]],steps:"Брокколи и кабачок отварите 4 минуты, остудите и заправьте маслом."},
+    {t:"Салат с огурцом и шпинатом",ing:[["cucumber",85],["spinach",40],["pepper",45],["olive_oil",5]],steps:"Нарежьте огурцы и перец, добавьте шпинат и заправьте маслом."},
+    {t:"Салат с томатами и перцем",ing:[["tomato",80],["pepper",60],["onion",15],["olive_oil",5]],steps:"Нарежьте томаты и перец, добавьте тонкий лук, заправьте оливковым маслом."},
+    {t:"Тёплый салат с брокколи и морковью",ing:[["broccoli",80],["carrot",55],["garlic",3],["olive_oil",5]],steps:"Брокколи и морковь обжарьте с чесноком 6 минут, подавайте тёплым."},
+  ];
+  salads.forEach(s=>add({...s,m:["lunch"],role:"salad",min:10,kcal:120,tags:["veg"],proteins:[]}));
+
+  /* ========== ОБЕД и УЖИН: белок + гарнир (генерация по слотам) ==========
+     Заголовок, состав и шаги собираются из ОДНИХ И ТЕХ ЖЕ слотов — поэтому
+     всегда соответствуют друг другу. */
+  const PROT={
+    turkey:{nom:"Индейка",acc:"индейку",amt:130,type:"turkey",methods:["pan","oven","grill","tomato"]},
+    rabbit:{nom:"Кролик",acc:"кролика",amt:120,type:"rabbit",methods:["pan","oven","tomato"]},
+    chicken:{nom:"Курица",acc:"курицу",amt:135,type:"chicken",methods:["pan","oven","grill","tomato"]},
+    beef:{nom:"Говядина",acc:"говядину",amt:115,type:"beef",methods:["pan","grill","tomato"]},
+    pork:{nom:"Свинина",acc:"свинину",amt:125,type:"pork",methods:["pan","oven","grill"]},
+    trout:{nom:"Форель",acc:"форель",amt:130,type:"fish",methods:["pan","oven","steam"]},
+    salmon:{nom:"Лосось",acc:"лосося",amt:125,type:"fish",methods:["pan","oven","steam"]},
+    cod:{nom:"Треска",acc:"треску",amt:130,type:"fish",methods:["pan","oven","steam"]},
+    tuna:{nom:"Тунец",acc:"тунец",amt:95,type:"fish",methods:["pan","tomato"],panStep:"Прогрейте тунец на сковороде с овощами 3–4 минуты."},
+    shrimp:{nom:"Креветки",acc:"креветки",amt:115,type:"seafood",methods:["pan","tomato"],panStep:"Обжарьте креветки на сковороде с оливковым маслом и чесноком 5–6 минут."},
+  };
+  const METHOD={
+    pan:{phrase:"на сковороде",step:acc=>`Нарежьте ${acc} небольшими кусочками, посолите и обжарьте на сковороде с оливковым маслом 8–10 минут до румяной корочки.`},
+    oven:{phrase:"из духовки",step:acc=>`Выложите ${acc} на противень с пергаментом, сбрызните оливковым маслом и посолите. Запекайте при 200 °C 18–20 минут.`},
+    steam:{phrase:"на пару",step:acc=>`Приготовьте ${acc} на пару 12–15 минут до готовности, слегка посолите.`},
+    grill:{phrase:"на гриле",step:acc=>`Обжарьте ${acc} на сковороде-гриль по 4–5 минут с каждой стороны.`},
+    tomato:{phrase:"в томатном соусе",step:acc=>`Обжарьте ${acc} 5 минут, добавьте нарезанные томаты и лук, тушите под крышкой 12 минут.`,extra:[["tomato",60],["onion",20]]},
+  };
+  const GRAINS=[
+    {id:"rice",amt:65,instr:"рисом",step:"Отварите рис 12–15 минут."},
+    {id:"buckwheat",amt:65,instr:"гречкой",step:"Отварите гречку 15 минут."},
+    {id:"potato",amt:120,instr:"картофелем",step:"Отварите или запеките картофель 20 минут."},
+    {id:"pasta",amt:75,instr:"пастой",step:"Отварите пасту согласно времени на упаковке."},
+    {id:"lentils",amt:70,instr:"чечевицей",step:"Отварите чечевицу 18 минут."},
+    {id:"chickpeas",amt:70,instr:"нутом",step:"Прогрейте нут на сковороде 5 минут."},
+  ];
+  const VEG=[
+    {ing:[["broccoli",85]],instr:"брокколи",step:"Брокколи приготовьте на пару 5 минут."},
+    {ing:[["zucchini",90]],instr:"кабачком",step:"Кабачок нарежьте и обжарьте 6 минут."},
+    {ing:[["pepper",70]],instr:"перцем",step:"Сладкий перец нарежьте и потушите 5 минут."},
+    {ing:[["spinach",60]],instr:"шпинатом",step:"Шпинат прогрейте на сковороде 2 минуты."},
+    {ing:[["carrot",70]],instr:"морковью",step:"Морковь нарежьте и потушите 8 минут."},
+    {ing:[["mushrooms",90]],instr:"грибами",step:"Грибы нарежьте и обжарьте 7 минут."},
+    {ing:[["peas",60]],instr:"зелёным горошком",step:"Зелёный горошек прогрейте 3 минуты."},
+    {ing:[["tomato",75]],instr:"томатами",step:"Томаты нарежьте и потушите 4 минуты."},
+    {ing:[["broccoli",60],["carrot",45]],instr:"брокколи и морковью",step:"Брокколи и морковь приготовьте на пару 6 минут."},
+    {ing:[["pepper",55],["carrot",45]],instr:"перцем и морковью",step:"Перец и морковь обжарьте 7 минут."},
+  ];
+  Object.entries(PROT).forEach(([pid,p])=>{
+    p.methods.forEach(mk=>{
+      const M=METHOD[mk];
+      const protStep=(mk==="pan" && p.panStep)?p.panStep:M.step(p.acc);
+      GRAINS.forEach(g=>{
+        VEG.forEach(v=>{
+          const ing=[[pid,p.amt],["olive_oil",5],[g.id,g.amt],...v.ing.map(x=>[...x])];
+          if(M.extra) M.extra.forEach(e=>{ if(!ing.some(([id])=>id===e[0])) ing.push([...e]); });
+          const steps=`${protStep} ${g.step} ${v.step} Подавайте ${p.acc} с гарниром.`;
+          add({t:`${p.nom} ${M.phrase} с ${g.instr} и ${v.instr}`,
+            m:["lunch"],role:"main",proteins:[p.type],min:20,kcal:440,tags:["protein","slow_carb"],ing,steps});
+        });
+      });
+    });
+  });
+
+  /* ========== УЖИН: белок + овощи, без крупы (генерация) ========== */
+  const VEGPAIRS=[
+    {ing:[["broccoli",80],["carrot",50]],instr:"брокколи и морковью",step:"Брокколи и морковь приготовьте на пару 6 минут."},
+    {ing:[["zucchini",85],["pepper",55]],instr:"кабачком и перцем",step:"Кабачок и перец нарежьте и обжарьте 8 минут."},
+    {ing:[["spinach",50],["tomato",60]],instr:"шпинатом и томатами",step:"Томаты потушите 3 минуты, добавьте шпинат и прогрейте ещё 2 минуты."},
+    {ing:[["broccoli",80],["pepper",50]],instr:"брокколи и перцем",step:"Брокколи отварите 5 минут, перец обжарьте 5 минут."},
+    {ing:[["mushrooms",80],["zucchini",70]],instr:"грибами и кабачком",step:"Грибы и кабачок обжарьте на сковороде 8 минут."},
+    {ing:[["cucumber",70],["tomato",70],["olive_oil",5]],instr:"свежим салатом",step:"Огурцы и помидоры нарежьте и заправьте оливковым маслом."},
+    {ing:[["carrot",60],["peas",50]],instr:"морковью и горошком",step:"Морковь и зелёный горошек потушите 8 минут."},
+    {ing:[["zucchini",60],["pepper",45],["tomato",50],["onion",20]],instr:"овощным рагу",step:"Кабачок, перец, томаты и лук нарежьте и потушите на сковороде 10 минут."},
+    {ing:[["broccoli",75],["spinach",45]],instr:"брокколи и шпинатом",step:"Брокколи отварите 5 минут, шпинат прогрейте 2 минуты."},
+    {ing:[["zucchini",70],["carrot",50]],instr:"кабачком и морковью",step:"Кабачок и морковь обжарьте 8 минут."},
+    {ing:[["pepper",60],["spinach",45]],instr:"перцем и шпинатом",step:"Перец потушите 5 минут, добавьте шпинат на 2 минуты."},
+    {ing:[["mushrooms",80],["pepper",50]],instr:"грибами и перцем",step:"Грибы и перец обжарьте 7 минут."},
+  ];
+  Object.entries(PROT).forEach(([pid,p])=>{
+    p.methods.forEach(mk=>{
+      const M=METHOD[mk];
+      const protStep=(mk==="pan" && p.panStep)?p.panStep:M.step(p.acc);
+      VEGPAIRS.forEach(v=>{
+        const ing=[[pid,p.amt],["olive_oil",5],...v.ing.map(x=>[...x])];
+        if(M.extra) M.extra.forEach(e=>{ if(!ing.some(([id])=>id===e[0])) ing.push([...e]); });
+        const steps=`${protStep} ${v.step} Подавайте белок с овощами — лёгкий ужин.`;
+        add({t:`${p.nom} ${M.phrase} с ${v.instr}`,
+          m:["dinner"],role:"dinner",proteins:[p.type],min:18,kcal:370,tags:["protein","veg"],ing,steps});
+      });
+    });
+  });
+
+  /* ========== ПЕРЕКУСЫ: кисломолочное (ТОЛЬКО перекус) ========== */
+  const snackDairy=[
+    {t:"Стакан кефира",ing:[["kefir",200]],steps:"Налейте стакан кефира."},
+    {t:"Натуральный йогурт без сахара",ing:[["yogurt",150]],steps:"Подайте натуральный йогурт без добавок."},
+    {t:"Творог с ягодами",ing:[["cottage",110],["berries",45]],steps:"Смешайте творог с размороженными ягодами."},
+    {t:"Йогурт с ягодами",ing:[["yogurt",140],["berries",40]],steps:"Добавьте в йогурт свежие или размороженные ягоды."},
+    {t:"Творог с бананом",ing:[["cottage",100],["banana",70]],steps:"Разомните творог с нарезанным бананом."},
+    {t:"Йогурт с яблоком",ing:[["yogurt",140],["apple",80]],steps:"Добавьте в йогурт натёртое яблоко."},
+    {t:"Кефир с ягодами",ing:[["kefir",180],["berries",40]],steps:"Взбейте кефир с ягодами в питьевой смузи."},
+    {t:"Творог с мёдом",ing:[["cottage",120],["honey",10]],steps:"Полейте творог ложкой мёда."},
+    {t:"Творог с грецким орехом",ing:[["cottage",110],["nuts",12]],steps:"Смешайте творог с рублеными грецкими орехами."},
+    {t:"Йогурт с бананом",ing:[["yogurt",140],["banana",70]],steps:"Добавьте в йогурт нарезанный банан."},
+  ];
+  snackDairy.forEach(s=>add({...s,m:["snack"],role:"snack_dairy",min:2,kcal:140,tags:["dairy","protein"],proteins:[]}));
+
+  const snackFruit=[
+    {t:"Яблоко",ing:[["apple",130]]},
+    {t:"Банан",ing:[["banana",120]]},
+    {t:"Яблоко и банан",ing:[["apple",80],["banana",70]]},
+    {t:"Горсть ягод",ing:[["berries",80]]},
+    {t:"Яблоко с ягодами",ing:[["apple",100],["berries",50]]},
+    {t:"Банан с ягодами",ing:[["banana",90],["berries",45]]},
+    {t:"Фруктовый микс",ing:[["apple",70],["banana",60],["berries",40]]},
+    {t:"Морковные палочки",ing:[["carrot",90]]},
+    {t:"Дольки яблока",ing:[["apple",140]]},
+    {t:"Банан с яблоком",ing:[["banana",70],["apple",70]]},
+  ];
+  snackFruit.forEach(s=>add({...s,m:["snack"],role:"snack_fruit",min:2,kcal:100,tags:["lowsugar"],proteins:[],steps:"Промойте и нарежьте — лёгкий перекус из фруктов и ягод."}));
+
+  const snackNuts=[
+    {t:"Грецкий орех с яблоком",ing:[["nuts",20],["apple",100]]},
+    {t:"Орехи с бананом",ing:[["nuts",18],["banana",90]]},
+    {t:"Горсть грецких орехов",ing:[["nuts",25]]},
+    {t:"Орехи с ягодами",ing:[["nuts",15],["berries",50]]},
+    {t:"Орехи с творогом",ing:[["nuts",15],["cottage",90]]},
+    {t:"Орехи с хлопьями и мёдом",ing:[["nuts",18],["oats",30],["honey",6]]},
+    {t:"Орехи и банан с мёдом",ing:[["nuts",18],["banana",80],["honey",6]]},
+    {t:"Орехи с яблоком",ing:[["nuts",18],["apple",100]]},
+  ];
+  snackNuts.forEach(s=>add({...s,m:["snack"],role:"snack_nuts",min:2,kcal:180,tags:["protein"],proteins:[],steps:"Подайте орехи с фруктом — полезные жиры и белок."}));
+
+  const snackCarb=[
+    {t:"Хлеб с сыром",ing:[["bread",50],["cheese",25]],steps:"На ломтик цельнозернового хлеба положите сыр."},
+    {t:"Тост с творогом и томатом",ing:[["bread",50],["cottage",60],["tomato",30]],steps:"Намажьте творог на хлеб, сверху положите кружок помидора."},
+    {t:"Хлеб с яйцом",ing:[["bread",50],["egg",1]],steps:"Отварите яйцо, нарежьте и выложите на хлеб."},
+    {t:"Овсянка на молоке",ing:[["oats",45],["milk",120]],steps:"Сварите хлопья на молоке 5 минут."},
+    {t:"Гречка с яйцом",ing:[["buckwheat",50],["egg",1]],steps:"Отварите гречку, подайте с варёным яйцом."},
+    {t:"Тост с сыром и томатом",ing:[["bread",50],["cheese",25],["tomato",30]],steps:"На хлеб положите сыр и кружок помидора, подсушите в тостере 2 минуты."},
+    {t:"Рис с яйцом",ing:[["rice",50],["egg",1]],steps:"Отварите рис, добавьте нарезанное варёное яйцо."},
+    {t:"Хлебцы с творогом",ing:[["bread",40],["cottage",60]],steps:"Намажьте творог на цельнозерновой хлеб."},
+  ];
+  snackCarb.forEach(s=>add({...s,m:["snack"],role:"snack_carb",min:3,kcal:200,tags:["slow_carb"],proteins:[]}));
+
+  return out;
+}
+const RECIPES = buildRecipeDatabase();
+
+function inferRole(r){
+  if(r.role) return r.role;
+  const t = r.t.toLowerCase();
+  if(/суп|борщ|уха|бульон/i.test(t)) return "soup";
+  if(/салат/i.test(t)) return "salad";
+  return "main";
+}
+
+function inferProteins(r){
+  if(r.proteins && r.proteins.length) return r.proteins;
+  const p = [];
+  r.ing.forEach(([id]) => {
+    if(id==="turkey") p.push("turkey");
+    else if(id==="rabbit") p.push("rabbit");
+    else if(id==="chicken") p.push("chicken");
+    else if(id==="beef") p.push("beef");
+    else if(id==="pork") p.push("pork");
+    else if(id==="shrimp") p.push("seafood");
+    else if(id==="trout"||id==="salmon"||id==="cod"||id==="tuna") p.push("fish");
+  });
+  return [...new Set(p)];
+}
+
+function inferTags(r){
+  const tags = new Set(r.tags || []);
+  if(r.ing.some(([id]) => SLOW_CARB.has(id))) tags.add("slow_carb");
+  if(r.ing.some(([id]) => ING[id]?.meat || id==="egg")) tags.add("protein");
+  if(r.ing.some(([id]) => ["kefir","yogurt","cottage","milk","sour_cream"].includes(id))) tags.add("dairy");
+  const vegIds = ["cucumber","tomato","pepper","zucchini","broccoli","spinach","carrot","mushrooms","peas"];
+  if(r.ing.filter(([id]) => vegIds.includes(id)).length >= 2) tags.add("veg");
+  return [...tags];
+}
+
+RECIPES.forEach(r => {
+  const a = new Set(); let veg = true, minAge = 0;
+  r.ing.forEach(([id]) => {
+    const ing = ING[id]; if(!ing) return;
+    ing.allerg.forEach(x => a.add(x));
+    if(ing.meat) veg = false;
+    if(ing.minAge) minAge = Math.max(minAge, ing.minAge);
+  });
+  r.allerg = [...a]; r.veg = veg; r.minAge = minAge;
+  r.role = inferRole(r); r.proteins = inferProteins(r);
+  r.tags = inferTags(r);
 });
+
+const HISTORY_KEY="vvMenuHistory";
+const HISTORY_WEEKS=4;
 
 /* ===== СОСТОЯНИЕ ===== */
 const state={adults:2, children:[6],
   meals:new Set(["breakfast","lunch","dinner"]),
-  exclude:new Set(), prefs:new Set(), freeText:"", seed:1, llm:null};
+  exclude:new Set(), prefs:new Set(), freeText:"", seed:1,
+  llm:null, requirements:null};
+
+const SNACK_ROTATION=["snack_dairy","snack_fruit","snack_nuts","snack_carb","snack_dairy","snack_fruit","snack_carb"];
+
+function pickSnack(dayIdx, usedWeek, usedHistory, rand){
+  const preferred=SNACK_ROTATION[dayIdx];
+  const tryRoles=[preferred,"snack_fruit","snack_dairy","snack_carb","snack_nuts"];
+  for(const role of tryRoles){
+    const pool=poolFor("snack",role);
+    if(!pool.length) continue;
+    const r=pickFromPool(pool,usedWeek,usedHistory,rand,null);
+    if(r) return r;
+  }
+  const any=poolFor("snack",null);
+  return any.length?pickFromPool(any,usedWeek,usedHistory,rand,null):null;
+}
 
 const DAYS=["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"];
 const MEAL_LABEL={breakfast:"Завтрак",lunch:"Обед",dinner:"Ужин",snack:"Перекус"};
@@ -353,37 +616,160 @@ function eaters(){return state.adults+state.children.length;}
 function servings(){return state.adults + state.children.reduce((s,a)=>s+ageFactor(a),0);}
 function youngest(){return state.children.length?Math.min(...state.children):99;}
 
-/* ===== ПОДБОР ===== */
-function poolFor(meal){
+function loadHistory(){
+  try{ return JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]"); }catch{ return []; }
+}
+function saveHistory(ids, replaceLast){
+  const hist=loadHistory();
+  const entry={ts:Date.now(),ids};
+  if(replaceLast && hist.length) hist[hist.length-1]=entry;
+  else hist.push(entry);
+  while(hist.length>HISTORY_WEEKS) hist.shift();
+  localStorage.setItem(HISTORY_KEY,JSON.stringify(hist));
+}
+function historyIds(){
+  return new Set(loadHistory().flatMap(w=>w.ids));
+}
+
+function parseRequirements(text){
+  const t=text.toLowerCase();
+  const req={
+    proteinBoost:{turkey:0,rabbit:0,chicken:0,beef:0,pork:0,fish:0,seafood:0},
+    proteinPenalty:{turkey:0,rabbit:0,chicken:0,beef:0,pork:0,fish:0,seafood:0},
+    notes:[],
+  };
+  const boost=(keys,protein,label)=>{
+    if(keys.some(k=>t.includes(k))){ req.proteinBoost[protein]+=4; req.notes.push(label); }
+  };
+  const penalize=(keys,protein,label)=>{
+    if(keys.some(k=>t.includes(k))){ req.proteinPenalty[protein]+=8; req.notes.push("меньше: "+label); }
+  };
+
+  boost(["индей","индюш"],"turkey","индейка");
+  boost(["кролик","крольч"],"rabbit","кролик");
+  boost(["куриц","курин","цыпл"],"chicken","курица");
+  boost(["говяд","говяж"],"beef","говядина");
+  boost(["свин"],"pork","свинина");
+  boost(["рыб","форел","лосос","треск","минтай","судак","хек"],"fish","рыба");
+  boost(["кревет","морепр","кальмар","миди"],"seafood","морепродукты");
+
+  penalize(["без куриц","не куриц","курицу редко"],"chicken","курица");
+  penalize(["без говяд","говядину редко"],"beef","говядина");
+  penalize(["без свин","свинину не","свинину редко"],"pork","свинина");
+  penalize(["без рыб","рыбу редко","не едят рыбу"],"fish","рыба");
+  penalize(["без мореп","кревет"],"seafood","морепродукты");
+  penalize(["без индей","индейку редко"],"turkey","индейка");
+  penalize(["без кролик","кролика редко"],"rabbit","кролик");
+  penalize(["вегет","без мяса","мало мяса"],"chicken","мясо");
+  penalize(["вегет","без мяса","мало мяса"],"beef","мясо");
+  penalize(["вегет","без мяса","мало мяса"],"pork","мясо");
+  penalize(["вегет","без мяса","мало мяса"],"turkey","мясо");
+  penalize(["вегет","без мяса","мало мяса"],"rabbit","мясо");
+
+  return req;
+}
+
+function recipeScore(r){
+  let score=0;
+  if(state.prefs.has("protein") && r.tags.includes("protein")) score+=2;
+  if(state.prefs.has("lowsugar") && r.tags.includes("lowsugar")) score+=2;
+  if(state.prefs.has("budget") && r.tags.includes("budget")) score+=2;
+  if(state.llm?.scores?.[r.id]!=null) score+=Number(state.llm.scores[r.id])||0;
+
+  const req=state.requirements;
+  if(req){
+    r.proteins.forEach(p=>{
+      score+=req.proteinBoost[p]||0;
+      score-=req.proteinPenalty[p]||0;
+    });
+  }
+  return score;
+}
+
+function poolFor(meal, role){
   const ymin=youngest();
   return RECIPES.filter(r=>{
     if(!r.m.includes(meal)) return false;
-    for(const ex of state.exclude){ if(r.allerg.includes(ex)) return false; }   // аллергены — жёсткий фильтр
-    if(state.prefs.has("veg") && !r.veg) return false;                          // вегетарианское — жёсткий
-    if(r.minAge>ymin) return false;                                             // возрастная безопасность — жёсткий
+    if(role && r.role!==role) return false;
+    if(meal==="breakfast" && r.role==="breakfast"){
+      if(!r.tags.includes("slow_carb") || !r.tags.includes("protein")) return false;
+    }
+    for(const ex of state.exclude){ if(r.allerg.includes(ex)) return false; }
+    if(state.prefs.has("veg") && !r.veg) return false;
+    if(r.minAge>ymin) return false;
     return true;
-  }).map(r=>{
-    let score=0;
-    if(state.prefs.has("protein") && r.tags.includes("protein")) score+=2;
-    if(state.prefs.has("lowsugar") && r.tags.includes("lowsugar")) score+=2;
-    if(state.prefs.has("budget") && r.tags.includes("budget")) score+=2;
-    if(state.llm && state.llm.scores && state.llm.scores[r.id]!=null) score+=Number(state.llm.scores[r.id])||0; // вклад LLM
-    return {r,score};
-  }).sort((a,b)=>b.score-a.score);
+  }).map(r=>({r,score:recipeScore(r)})).sort((a,b)=>b.score-a.score);
+}
+
+function pickFromPool(pool, usedWeek, usedHistory, rand, usedProteins){
+  let candidates=pool.filter(({r})=>!usedWeek.has(r.id) && !usedHistory.has(r.id));
+  if(!candidates.length) candidates=pool.filter(({r})=>!usedWeek.has(r.id));
+  if(!candidates.length) candidates=pool.slice();
+
+  if(usedProteins && candidates.some(({r})=>r.proteins.length)){
+    const fresh=candidates.filter(({r})=>!r.proteins.length || !r.proteins.some(p=>usedProteins.has(p)));
+    if(fresh.length) candidates=fresh;
+  }
+
+  const topScore=candidates[0]?.score??0;
+  const band=candidates.filter(c=>c.score>=topScore-2);
+  const pick=band[Math.floor(rand()*band.length)]||candidates[0];
+  return pick?.r||null;
 }
 
 function buildPlan(){
   const rand=rng(state.seed);
   const active=["breakfast","lunch","dinner","snack"].filter(m=>state.meals.has(m));
-  const pools={}; active.forEach(m=>pools[m]=poolFor(m));
-  const cursor={}; active.forEach(m=>cursor[m]=Math.floor(rand()*Math.max(1,pools[m].length)));
+  const usedWeek=new Set();
+  const usedHistory=historyIds();
+  const usedProteins=new Set();
   const plan=[];
+
   for(let d=0;d<7;d++){
     const day={day:DAYS[d],meals:[]};
-    active.forEach(m=>{
-      const pool=pools[m];
-      if(!pool.length){day.meals.push({meal:m,empty:true});return;}
-      day.meals.push({meal:m,r:pool[cursor[m]%pool.length].r}); cursor[m]++;
+    active.forEach(meal=>{
+      if(meal==="lunch"){
+        const roles=["soup","main","salad"];
+        const items=[];
+        roles.forEach(role=>{
+          const pool=poolFor("lunch",role);
+          const r=pickFromPool(pool,usedWeek,usedHistory,rand,usedProteins);
+          if(r){
+            items.push({role,r});
+            usedWeek.add(r.id);
+            r.proteins.forEach(p=>usedProteins.add(p));
+          }
+        });
+        day.meals.push(items.length?{meal,combo:true,items}:{meal,empty:true});
+        return;
+      }
+
+      if(meal==="dinner"){
+        const items=[];
+        ["dinner"].forEach(role=>{
+          const pool=poolFor("dinner",role);
+          const r=pickFromPool(pool,usedWeek,usedHistory,rand,usedProteins);
+          if(r){
+            items.push({role:r.role==="dairy"?"dairy":"dinner",r});
+            usedWeek.add(r.id);
+            r.proteins.forEach(p=>usedProteins.add(p));
+          }
+        });
+        day.meals.push(items.length?{meal,combo:true,items}:{meal,empty:true});
+        return;
+      }
+
+      if(meal==="snack"){
+        const r=pickSnack(d,usedWeek,usedHistory,rand);
+        day.meals.push(r?{meal,r}:{meal,empty:true});
+        if(r) usedWeek.add(r.id);
+        return;
+      }
+
+      const pool=poolFor(meal,"breakfast");
+      const r=pickFromPool(pool,usedWeek,usedHistory,rand,null);
+      day.meals.push(r?{meal,r}:{meal,empty:true});
+      if(r) usedWeek.add(r.id);
     });
     plan.push(day);
   }
@@ -392,7 +778,11 @@ function buildPlan(){
 
 function buildShopping(plan){
   const need={}; const sv=servings();
-  plan.forEach(day=>day.meals.forEach(slot=>{ if(slot.empty)return; slot.r.ing.forEach(([id,q])=>{need[id]=(need[id]||0)+q*sv;}); }));
+  plan.forEach(day=>day.meals.forEach(slot=>{
+    if(slot.empty) return;
+    const recipes=slot.combo?slot.items.map(i=>i.r):[slot.r];
+    recipes.forEach(r=>r.ing.forEach(([id,q])=>{need[id]=(need[id]||0)+q*sv;}));
+  }));
   const items=[];
   Object.entries(need).forEach(([id,amount])=>{
     const ing=ING[id],vv=ing.vv; let qtyLabel,price;
@@ -415,72 +805,115 @@ function buildShopping(plan){
    (аллергены, возраст, вегетарианское) всё равно применяются в poolFor ПОСЛЕ. */
 async function personalize(){
   const text=state.freeText.trim();
-  if(!text){ state.llm=null; return; }
-  const candidates=RECIPES.map(r=>`${r.id}: ${r.t} [теги: ${r.tags.join(",")||"—"}; ${r.m.map(m=>MEAL_LABEL[m]).join("/")}]`).join("\n");
-  const profile=`Взрослых: ${state.adults}; дети (возраст): ${state.children.join(", ")||"нет"}.`;
-  const prompt=`Ты — помощник по планированию семейного питания. Профиль семьи: ${profile}\n`+
-    `Семья описала свои привычки в еде:\n"""${text}"""\n\n`+
-    `Доступные рецепты:\n${candidates}\n\n`+
-    `Оцени каждый рецепт от 0 до 3: насколько он соответствует стилю и предпочтениям этой семьи `+
-    `(3 — точно в их вкусе; 0 — не подходит). Верни ТОЛЬКО валидный JSON без markdown и пояснений: `+
-    `{"summary":"одно короткое предложение о выявленных предпочтениях (по-русски)","scores":{"b1":2,"l1":3, ...}}`;
+  state.requirements=text?parseRequirements(text):null;
+
+  if(!text){
+    state.llm={
+      mode:"base",
+      summary:`Сбалансированное меню: ${RECIPES.length} рецептов · долгие углеводы и белок · разные виды мяса, рыбы и морепродуктов.`,
+    };
+    return;
+  }
+
+  const candidates=RECIPES.slice(0,80).map(r=>
+    `${r.id}: ${r.t} [${r.role}; ${r.proteins.join(",")||"—"}]`
+  ).join("\n");
+
+  const profile=`Взрослых: ${state.adults}; дети: ${state.children.join(", ")||"нет"}.`;
+  const reqHint=state.requirements?.notes.length
+    ? `\nПожелания: ${state.requirements.notes.join("; ")}.`
+    : "";
+
+  const prompt=`Планировщик здорового семейного меню. ${profile}\n"""${text}"""${reqHint}\n\n`+
+    `Рецепты (выборка):\n${candidates}\n\n`+
+    `Оцени релевантность 0–5 с учётом пожеланий. JSON: {"summary":"кратко по-русски","scores":{"r1":2,...}}`;
+
   try{
     const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,messages:[{role:"user",content:prompt}]})});
-    if(!res.ok) throw new Error("api "+res.status);
+      body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:4000,messages:[{role:"user",content:prompt}]})});
+    if(!res.ok) throw new Error("api");
     const data=await res.json();
     const out=(data.content||[]).map(c=>c.type==="text"?c.text:"").join("");
     const parsed=JSON.parse(out.replace(/```json|```/g,"").trim());
     state.llm={scores:parsed.scores||{},summary:parsed.summary||"",mode:"ai"};
   }catch(e){
-    state.llm=keywordFallback(text);  // офлайн-режим
+    state.llm=keywordFallback(text);
   }
 }
 
 function keywordFallback(text){
-  const t=text.toLowerCase(); const scores={}; const hits=[];
-  const rules=[
-    [["куриц","курин"],r=>r.ing.some(([i])=>i==="chicken"),"курицу"],
-    [["рыб","форел","лосос","тунец"],r=>r.allerg.includes("fish"),"рыбу"],
-    [["паст","макарон","спагетти"],r=>r.ing.some(([i])=>i==="pasta"),"пасту"],
-    [["каш","овсян","гречнев"],r=>/каша/i.test(r.t),"каши"],
-    [["салат"],r=>/салат/i.test(r.t),"салаты"],
-    [["суп"],r=>/суп/i.test(r.t),"супы"],
-    [["вегет","без мяса","овощ"],r=>r.veg,"овощные блюда"],
-    [["белк","протеин","спорт"],r=>r.tags.includes("protein"),"белковые блюда"],
-    [["говяд","мяс","котлет"],r=>r.ing.some(([i])=>i==="beef"||i==="turkey"),"мясные блюда"],
-  ];
-  const matched=[];
-  rules.forEach(([kw,test,label])=>{ if(kw.some(k=>t.includes(k))){ matched.push(label);
-    RECIPES.forEach(r=>{ if(test(r)) scores[r.id]=(scores[r.id]||0)+2; }); }});
-  return {scores,summary:matched.length?("Учли ключевые слова: "+matched.join(", ")+"."):"",mode:"kw"};
+  const req=parseRequirements(text);
+  const scores={};
+  RECIPES.forEach(r=>{
+    let s=0;
+    r.proteins.forEach(p=>{ s+=(req.proteinBoost[p]||0)-(req.proteinPenalty[p]||0); });
+    if(s>0) scores[r.id]=s;
+  });
+  const notes=req.notes.length?[...new Set(req.notes)].join("; "):"дополнительных ограничений нет";
+  return {scores,summary:`Учли ваши пожелания: ${notes}.`,mode:"kw"};
+}
+
+const ROLE_LABEL={
+  soup:"Суп", salad:"Овощной салат", main:"Мясо или рыба с гарниром",
+  dinner:"Белок + овощи", dairy:"Кисломолочное",
+  snack_dairy:"Кисломолочное", snack_fruit:"Фрукты",
+  snack_nuts:"Орехи", snack_carb:"Полезные углеводы",
+};
+
+function mealHtml(slot){
+  if(slot.empty) return `<div class="empty">${MEAL_LABEL[slot.meal]}: нет рецептов под фильтры — ослабьте ограничения.</div>`;
+  if(slot.combo){
+    return `<div class="meal"><div class="mt">${MEAL_LABEL[slot.meal]}</div>${
+      slot.items.map(it=>`<div class="sub-dish"><div class="lbl">${ROLE_LABEL[it.role]||it.role}</div><div class="name">${it.r.t}</div>
+        <div class="meta"><span>⏱ ${it.r.min} мин</span><span>≈ ${it.r.kcal} ккал</span></div>
+        <details><summary>Рецепт</summary><p>${it.r.steps}</p>
+        <div class="ings">${it.r.ing.map(([id])=>ING[id].name.toLowerCase()).join(", ")}</div></details></div>`).join("")
+    }</div>`;
+  }
+  const r=slot.r;
+  return `<div class="meal"><div class="mt">${MEAL_LABEL[slot.meal]}</div><div class="name">${r.t}</div>
+    <div class="meta"><span>⏱ ${r.min} мин</span><span>≈ ${r.kcal} ккал/порц.</span></div>
+    <details><summary>Рецепт и состав</summary><p>${r.steps}</p>
+    <div class="ings">Состав: ${r.ing.map(([id])=>ING[id].name.toLowerCase()).join(", ")}</div></details></div>`;
+}
+
+function collectRecipeIds(plan){
+  const ids=[];
+  plan.forEach(day=>day.meals.forEach(slot=>{
+    if(slot.empty) return;
+    if(slot.combo) slot.items.forEach(i=>ids.push(i.r.id));
+    else ids.push(slot.r.id);
+  }));
+  return ids;
 }
 
 /* ===== РЕНДЕР ===== */
-function renderResults(){
+function renderResults(replaceHistory){
   const plan=buildPlan(); const items=buildShopping(plan);
+  saveHistory(collectRecipeIds(plan), replaceHistory);
   const total=items.reduce((s,i)=>s+i.price,0);
   const active=["breakfast","lunch","dinner","snack"].filter(m=>state.meals.has(m));
   const kidsTxt=state.children.length?` + дети ${state.children.join(", ")} л.`:"";
   $("#summary").innerHTML=`<b>${eaters()} чел.</b> (${state.adults} взр.${kidsTxt}) · ${active.map(m=>MEAL_LABEL[m].toLowerCase()).join(", ")} · <b>ВкусВилл</b>`;
-  $("#menu-sub").textContent="7 дней · все рецепты ≤ 20 мин";
+  const subParts=[
+    `${RECIPES.length} рецептов`,
+    "углеводы + белок · много овощей",
+    "без повторов · ротация 4 нед.",
+  ];
+  $("#menu-sub").textContent=subParts.join(" · ");
 
-  const note=$("#ainote"); note.className="ai-note";
-  if(state.llm&&state.llm.summary){
-    note.classList.add("on"); if(state.llm.mode==="kw") note.classList.add("kw");
-    note.innerHTML=(state.llm.mode==="ai"?"<b>Меню подобрано под ваше описание.</b> ":"<b>Подбор по ключевым словам (офлайн).</b> ")+state.llm.summary;
+  const note=$("#ainote"); note.className="ai-note on";
+  if(state.llm?.mode==="kw") note.classList.add("kw");
+  if(state.llm?.summary){
+    const prefix=state.llm.mode==="ai"?"<b>Меню под ваше описание.</b> "
+      :state.llm.mode==="kw"?"<b>Учтены пожелания.</b> "
+      :"<b>Принцип меню.</b> ";
+    note.innerHTML=prefix+state.llm.summary;
   }
 
   $("#week").innerHTML=plan.map(day=>`<div class="day"><div class="dh">${day.day}</div><div class="meals">${
-    day.meals.map(slot=>{
-      if(slot.empty) return `<div class="empty">${MEAL_LABEL[slot.meal]}: нет рецептов под фильтры — ослабьте ограничения.</div>`;
-      const r=slot.r;
-      return `<div class="meal"><div class="mt">${MEAL_LABEL[slot.meal]}</div><div class="name">${r.t}</div>
-        <div class="meta"><span>⏱ ${r.min} мин</span><span>≈ ${r.kcal} ккал/порц.</span></div>
-        <details><summary>Рецепт и состав</summary><p>${r.steps}</p>
-        <div class="ings">Состав: ${r.ing.map(([id])=>ING[id].name.toLowerCase()).join(", ")}</div></details></div>`;
-    }).join("")
+    day.meals.map(mealHtml).join("")
   }</div></div>`).join("");
 
   const byCat={}; items.forEach(i=>{(byCat[i.cat]=byCat[i.cat]||[]).push(i);});
@@ -499,7 +932,7 @@ async function runGenerate(regenOnly){
   const btn=$("#generate");
   if(!regenOnly){ btn.disabled=true; btn.textContent="Подбираем меню…"; state.freeText=$("#freetext").value;
     await personalize(); btn.disabled=false; btn.textContent="Составить меню на неделю"; }
-  state.seed=Math.floor(Math.random()*1e6)+1; renderResults();
+  state.seed=Math.floor(Math.random()*1e6)+1; renderResults(regenOnly);
 }
 
 /* ===== UI: дети ===== */
@@ -535,8 +968,7 @@ $("#generate").addEventListener('click',()=>runGenerate(false));
 $("#shuffle").addEventListener('click',()=>runGenerate(true));
 $("#back").addEventListener('click',()=>{$("#results").classList.remove("show");$("#form-view").style.display="block";window.scrollTo({top:0,behavior:"smooth"});});
 $("#demo").addEventListener('click',()=>{
-  $("#freetext").value="Чаще всего готовим курицу и рыбу, дети любят пасту и каши, красное мясо едим редко. На завтрак — что-то быстрое.";
-  state.prefs.add("protein"); document.querySelector('[data-pref="protein"]').setAttribute('aria-pressed','true');
+  $("#freetext").value="Дети не едят рыбу. Свинину не готовим. Остальное — разнообразно.";
   runGenerate(false);
 });
 
